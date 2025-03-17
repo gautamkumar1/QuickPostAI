@@ -20,9 +20,19 @@ const generateToken = async (user) => {
 
 const createUser = async (userData) =>{
     try {
-        
+        const {email,password,username} = userData;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await prisma.user.create({
+            data: {
+                email: email,
+                password: hashedPassword,
+                username: username
+            }
+        })
+        return user;
     } catch (error) {
-        
+        console.log(`Error creating user`);
+        return error;
     }
 }
-export { isPasswordValid, generateToken }
+export { isPasswordValid, generateToken,createUser }
