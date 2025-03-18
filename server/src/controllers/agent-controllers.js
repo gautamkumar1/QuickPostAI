@@ -2,6 +2,7 @@ import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import {StringOutputParser} from "@langchain/core/output_parsers"
+import { prisma } from "../database/db.config.js";
 const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
   modelName: "gemini-2.0-flash",
@@ -111,7 +112,11 @@ const tweetGenerate = async (req, res) => {
     if (!url) {
       return res.status(400).json({ message: "URL is required" });
     }
-
+    const PostStored = await prisma.posts.create({
+      data:{
+        postUrl: url
+      }
+    })
     // 1. Load and scrape web content
     const docs = await loadWebContent(url);
     // 2. Summarize the blog content
