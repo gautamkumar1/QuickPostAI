@@ -1,10 +1,11 @@
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Logo } from './logo'
-import { Menu, X } from 'lucide-react'
+import { LogOut, Menu, X } from 'lucide-react'
 import React from 'react'
 import { cn } from '../lib/utils'
 import { RegisterButton } from '@/pages/sign-up/SignUp'
 import { LoginButton } from '@/pages/sign-in/SignIn'
+import { Button } from './ui/button'
 
 const menuItems = [
     { name: 'Features', href: '#link' },
@@ -76,9 +77,13 @@ export const HeroHeader = () => {
                                     ))}
                                 </ul>
                             </div>
-                            <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                                <LoginButton/>
+                            <div className="flex w-full flex-col space-y-2 sm:flex-row sm:items-center sm:gap-2 sm:space-y-0 md:w-fit">
+                                <LoginButton />
                                 <RegisterButton />
+                                <Button variant="destructive" className="flex items-center gap-2 w-full sm:w-auto">
+                                    <LogOut className="h-4 w-4" />
+                                    <span>Logout</span>
+                                </Button>
                             </div>
                         </div>
                     </div>
