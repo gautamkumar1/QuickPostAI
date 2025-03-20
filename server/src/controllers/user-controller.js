@@ -87,5 +87,30 @@ const loginUser = async (req, res) => {
     }
 };
 
+const logoutUser = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: "Unauthorized: User not logged in" });
+        }
+        const userId = req.user.id;
+        await prisma.user.update({
+            where: { id: userId },
+            data: { refreshToken: null },
+        });
+        const options = {
+            httpOnly: true,
+            secure: true,
+            maxAge: 0, 
+            sameSite: "none"
+        };
+        res.clearCookie("accessToken",options);
+        res.clearCookie("refreshToken",options);
+        return res.status(200).json({ message: "User logged out successfully" });
+        
+    } catch (error) {
+        console.log(`Error while logging out user, ${error}`);
+        return res.status(500).json({ error: error.message });
+    }
+}
 
-export { registerUser,loginUser }
+export { registerUser,loginUser,logoutUser }
