@@ -1,13 +1,17 @@
-import { Button } from "./components/ui/button"
 
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import LandingPage from "./mainComponents/landing-page/LandingPage";
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <LandingPage/>
+    }
+  ])
   return (
     <>
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <p className="text-red-500">Test</p>
-      <Button variant="destructive">Click me</Button>
-    </div>
+    <RouterProvider router={router} />
     </>
   )
 }
