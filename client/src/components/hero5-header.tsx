@@ -1,9 +1,10 @@
 import {Link} from 'react-router-dom'
 import { Logo } from './logo'
 import { Menu, X } from 'lucide-react'
-import { Button } from '../components/ui/button'
 import React from 'react'
 import { cn } from '../lib/utils'
+import { RegisterButton } from '@/pages/sign-up/SignUp'
+import { LoginButton } from '@/pages/sign-in/SignIn'
 
 const menuItems = [
     { name: 'Features', href: '#link' },
@@ -76,31 +77,8 @@ export const HeroHeader = () => {
                                 </ul>
                             </div>
                             <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    size="sm"
-                                    className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link to="#">
-                                        <span>Login</span>
-                                    </Link>
-                                </Button>
-                                <Button
-                                    asChild
-                                    size="sm"
-                                    className={cn(isScrolled && 'lg:hidden')}>
-                                    <Link to="#">
-                                        <span>Sign Up</span>
-                                    </Link>
-                                </Button>
-                                <Button
-                                    asChild
-                                    size="sm"
-                                    className={cn(isScrolled ? 'lg:inline-flex' : 'hidden')}>
-                                    <Link to="#">
-                                        <span>Get Strated</span>
-                                    </Link>
-                                </Button>
+                                <LoginButton/>
+                                <RegisterButton />
                             </div>
                         </div>
                     </div>
