@@ -79,7 +79,7 @@ export default function HeroSection() {
                                     <Link
                                         to="#link"
                                         className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
-                                        <span className="text-foreground text-sm">Meet QuickPostAI - Your AI-Powered X Post Maker!
+                                        <span className="text-foreground text-sm">Meet QuickPostAI - Your AI-Powered X Post Maker
                                         </span>
                                         <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
 
@@ -173,7 +173,7 @@ export default function HeroSection() {
                                     <img
                                         className="bg-background aspect-15/8 relative hidden rounded-2xl dark:block"
                                         src="/mail2.png"
-                                        alt="app screen"
+                                        alt="QuickPostAI"
                                         width="2700"
                                         height="1440"
                                     />
