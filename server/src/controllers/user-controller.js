@@ -1,6 +1,6 @@
 import { prisma } from "../database/db.config.js";
-import { createUser, generateAccessToken, generateRefreshToken, isPasswordValid } from "../services/user-services.js";
-
+import { createUser, generateAccessToken, generateRefreshToken, hashRefreshToken, isPasswordValid, isValidToken } from "../services/user-services.js";
+import jwt from "jsonwebtoken"
 const registerUser = async (req, res) => {
     try {
         const {username,email,password} = req.body;
@@ -48,11 +48,11 @@ const loginUser = async (req, res) => {
 
         const accessToken = await generateAccessToken(isUserFound);
         const refreshToken = await generateRefreshToken(isUserFound);
-
+        const hashedRefreshToken = await hashRefreshToken(refreshToken);
         // store refresh token in db
         await prisma.user.update({
-            where: { email },
-            data: { refreshToken: refreshToken },
+            where: { id:isUserFound.id },
+            data: { refreshToken: hashedRefreshToken },
         });
 
         const loggedInUser = await prisma.user.findUnique({
@@ -79,7 +79,6 @@ const loginUser = async (req, res) => {
                 message: "User logged in successfully",
                 loggedInUser: loggedInUser,
                 accessToken: accessToken,
-                refreshToken: refreshToken
             });
     } catch (error) {
         console.error("Error while logging in user:", error);
@@ -113,4 +112,52 @@ const logoutUser = async (req, res) => {
     }
 }
 
-export { registerUser,loginUser,logoutUser }
+const refreshAccessToken = async (req, res) => {
+    try {
+        const incomingRefreshToken = req.cookies.refreshToken || req.header("Authorization")?.replace("Bearer ", "");
+        if(!incomingRefreshToken){
+            return res.status(401).json({message: "Unauthorized request"})
+        }
+        let verifyingUser;
+        try {
+            verifyingUser = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+        } catch (error) {
+            return res.status(401).json({ message: "Invalid or expired refresh token" });
+        }
+        const isUserExist = await prisma.user.findUnique({where:{id: verifyingUser.id}})
+        if(!isUserExist){
+            return res.status(401).json({message: "Invalid Refresh Token"})
+        }
+        const isRefreshTokenValid = await isValidToken(incomingRefreshToken,isUserExist.refreshToken);
+        if(!isRefreshTokenValid){
+            return res.status(401).json({ message: "Refresh token is expired or used" });
+        }
+        const accessToken = await generateAccessToken(isUserExist);
+        const newRefreshToken = await generateRefreshToken(isUserExist);
+        const hashedRefreshToken = await hashRefreshToken(newRefreshToken);
+        await prisma.user.update({
+            where:{id:isUserExist.id},
+            data:{
+                refreshToken:hashedRefreshToken
+            }
+        })
+        const options = {
+            httpOnly: true,
+            secure: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            sameSite: "none"
+        };
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", newRefreshToken, options)
+            .json({
+                message: "Access token refreshed",
+                accessToken: accessToken,
+            });
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({message:"Error while refreshing access token"})
+    }
+}
+export { registerUser,loginUser,logoutUser,refreshAccessToken }

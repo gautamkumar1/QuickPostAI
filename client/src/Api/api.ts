@@ -4,7 +4,7 @@ import axios from "axios";
 export const registerUser = async (data: RegisterData): Promise<any> => {
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/signup`, 
+      `${import.meta.env.VITE_BACKEND_URL}/auth/signup`, 
       data
     );
     return response.data;

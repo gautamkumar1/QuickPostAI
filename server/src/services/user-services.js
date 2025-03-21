@@ -29,7 +29,12 @@ const generateRefreshToken = async (user) => {
     );
     return token;
 };
-
+const hashRefreshToken = async (refreshToken) =>{
+    return await bcrypt.hash(refreshToken,10);
+}
+const isValidToken = async (refreshToken,hashedRefreshToken) =>{
+    return await bcrypt.compare(refreshToken,hashedRefreshToken);
+}
 const createUser = async (userData) =>{
     try {
         const {email,password,username} = userData;
@@ -48,4 +53,4 @@ const createUser = async (userData) =>{
         return error;
     }
 }
-export { isPasswordValid, generateAccessToken,generateRefreshToken,createUser }
+export { isPasswordValid, generateAccessToken,generateRefreshToken,createUser,hashRefreshToken,isValidToken }
