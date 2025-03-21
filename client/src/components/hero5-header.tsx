@@ -6,7 +6,9 @@ import { cn } from '../lib/utils'
 import { RegisterButton } from '@/pages/sign-up/SignUp'
 import { LoginButton } from '@/pages/sign-in/SignIn'
 import { Button } from './ui/button'
-
+import { useMutation } from '@tanstack/react-query'
+import { logoutUser } from '@/Api/api'
+import useAuthStore from '@/zustand/authStore'
 const menuItems = [
     { name: 'Features', href: '#link' },
     { name: 'Solution', href: '#link' },
@@ -17,9 +19,35 @@ const menuItems = [
 export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-
+    const {isAuthenticated} = useAuthStore();
+    const mutation = useMutation(({
+        mutationFn:logoutUser,
+        onSuccess: (data) =>{
+            console.log(`User logged out successfully, ${data}`);
+            alert("Logged out successfully");
+        },
+        onError: (error:Error) => {
+            let errorMessage = "Log out failed";
+        
+            const err = error as Error & { response?: { data?: { message?: string } } };
+            if (err.response && err.response.data) {
+              errorMessage = err.response.data.message || errorMessage;
+            }
+            
+            console.log(`Error logging out user: ${errorMessage}`);
+            alert(errorMessage);
+        }
+    }))
+    const handleLogout = (e: React.FormEvent) => {
+        e.preventDefault();
+        mutation.mutate();
+        localStorage.removeItem("auth-storage");
+        window.location.reload();
+    }
     React.useEffect(() => {
         const handleScroll = () => {
+            console.log(`isLoggedIn ${isAuthenticated}`);
+            
             setIsScrolled(window.scrollY > 50)
         }
         window.addEventListener('scroll', handleScroll)
@@ -78,12 +106,20 @@ export const HeroHeader = () => {
                                 </ul>
                             </div>
                             <div className="flex w-full flex-col space-y-2 sm:flex-row sm:items-center sm:gap-2 sm:space-y-0 md:w-fit">
-                                <LoginButton />
-                                <RegisterButton />
-                                <Button variant="destructive" className="flex items-center gap-2 w-full sm:w-auto">
+                                {
+                                    isAuthenticated ? 
+                                    (<>
+                                    <Button variant="destructive" className="flex items-center gap-2 w-full sm:w-auto" onClick={handleLogout}>
                                     <LogOut className="h-4 w-4" />
                                     <span>Logout</span>
                                 </Button>
+                                    </>) : 
+                                    (<>
+                                    <LoginButton />
+                                    <RegisterButton />
+                                    </>)
+                                }
+                                
                             </div>
                         </div>
                     </div>

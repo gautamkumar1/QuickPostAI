@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { LoginData } from '@/types/type'
 import { useMutation } from '@tanstack/react-query'
 import { loginUser } from '@/Api/api'
+import useAuthStore from '@/zustand/authStore'
 
 
 export const LoginButton = () => {
@@ -38,9 +39,11 @@ export default function SignInForm() {
           onSuccess: (data) =>{
             console.log(`User created successfully, ${data}`);
             alert("Sign in successful");
+            useAuthStore.setState({isAuthenticated:true});
             setFormdata({email: "", password: ""});
           },
           onError: (error:Error) => {
+            useAuthStore.setState({isAuthenticated:false});
             let errorMessage = "Sign in failed";
         
             const err = error as Error & { response?: { data?: { message?: string } } };

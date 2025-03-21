@@ -63,3 +63,14 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const logoutUser = async () => {
+  try {
+    const response = await axiosInstance.post("/auth/logout");
+    return response.data;
+  } catch (error) {
+    console.log(`Error while logout ${error}`);
+    throw error;
+    
+  }
+}
