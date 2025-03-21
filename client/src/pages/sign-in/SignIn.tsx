@@ -10,6 +10,10 @@ import {
     DialogClose,
     DialogTrigger,
 } from "../../components/ui/dialog";
+import { useState } from 'react'
+import { LoginData } from '@/types/type'
+import { useMutation } from '@tanstack/react-query'
+import { loginUser } from '@/Api/api'
 
 
 export const LoginButton = () => {
@@ -25,6 +29,37 @@ export const LoginButton = () => {
     );
 };
 export default function SignInForm() {
+    const [formData,setFormdata] = useState<LoginData>({
+        email:"",
+        password:""
+    })
+    const mutation = useMutation({
+          mutationFn: loginUser,
+          onSuccess: (data) =>{
+            console.log(`User created successfully, ${data}`);
+            alert("Sign in successful");
+            setFormdata({email: "", password: ""});
+          },
+          onError: (error:Error) => {
+            let errorMessage = "Sign in failed";
+        
+            const err = error as Error & { response?: { data?: { message?: string } } };
+            if (err.response && err.response.data) {
+              errorMessage = err.response.data.message || errorMessage;
+            }
+            
+            console.log(`Error login user: ${errorMessage}`);
+            alert(errorMessage);
+    
+          }
+        })
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setFormdata({ ...formData, [e.target.name]: e.target.value });
+          };
+        const handleSubmit = (e: React.FormEvent) => {
+            e.preventDefault();
+            mutation.mutate(formData);
+          };
     return (
         <div className="bg-muted w-full overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
             <div className="bg-card relative -m-px rounded-[calc(var(--radius)+.125rem)] border p-4 pb-6 sm:p-8">
@@ -42,23 +77,27 @@ export default function SignInForm() {
                 </div>
 
                 <div className="mt-6 space-y-4 sm:space-y-6">
+                    <form onSubmit={handleSubmit}>
                     <div className="space-y-2">
                         <Label htmlFor="email" className="block text-sm">
                             Email
                         </Label>
-                        <Input type="email" required name="email" id="email" />
+                        <Input type="email" required name="email" id="email" value={formData.email} onChange={handleChange} />
                     </div>
 
                     <div className="space-y-0.5">
                         <div className="flex items-center justify-between">
-                            <Label htmlFor="pwd" className="text-title text-sm">
+                            <Label htmlFor="password" className="text-title text-sm">
                                 Password
                             </Label>
                         </div>
-                        <Input type="password" required name="pwd" id="pwd" />
+                        <Input type="password" required name="password" id="password" value={formData.password} onChange={handleChange} />
                     </div>
 
-                    <Button className="w-full">Sign In</Button>
+                    <Button className="w-full mt-3" type="submit" disabled={mutation.isPending}>
+                        {mutation.isPending ? "Logging in..." : "Log in"}
+                    </Button>
+                    </form>
                 </div>
 
 
