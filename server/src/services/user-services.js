@@ -41,7 +41,8 @@ const createUser = async (userData) =>{
                 password: hashedPassword,
             }
         })
-        return user;
+        const newCreatedUser = await prisma.user.findUnique({where:{email:email},select:{id:true,username:true,email:true,refreshToken:true}});
+        return newCreatedUser;
     } catch (error) {
         console.log(`Error creating user, ${error}`);
         return error;
