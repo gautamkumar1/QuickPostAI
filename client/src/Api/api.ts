@@ -1,18 +1,18 @@
 import { LoginData, RegisterData } from "@/types/type";
 import axios from "axios";
-import Cookies from "js-cookie";
+
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const axiosInstance = axios.create({
   baseURL: VITE_BACKEND_URL,
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 export const registerUser = async (data: RegisterData): Promise<any> => {
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/auth/signup`, 
-      data
-    );
+    const response = await axiosInstance.post("/auth/signup", data);
     return response.data;
   } catch (error: any) {
     console.error("Registration failed:", error.response?.data || error.message);
@@ -30,39 +30,55 @@ export const loginUser = async (data : LoginData): Promise<any> => {
     
   }
 }
-// Before any request is sent, this interceptor checks if there's an access token in the cookies.
-// If there is, it adds it to the Authorization header.
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const accessToken = Cookies.get("accessToken");
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-// If the server responds with a 401 status code, this interceptor will try to refresh the access token.
+
+// Add interceptor to handle token expiration
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
+    
+    // If error is 401 (Unauthorized) and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      
       try {
-        // Call Refresh Token API
-        await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/refreshToken`, {
-          withCredentials: true,
-        });
-        return axiosInstance(originalRequest); // Retry the failed request
+        // Try to refresh the token
+        await refreshTokens();
+        
+        // If refresh successful, retry the original request
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
+        // If refresh fails, redirect to login
+        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
+    
     return Promise.reject(error);
   }
 );
+// Function to refresh tokens
+export const refreshTokens = async () => {
+  try {
+    const response = await axiosInstance.post('/auth/refreshToken');
+    
+    // Set the new access token in auth header for future requests
+    if (response.data.accessToken) {
+      setAuthHeader(response.data.accessToken);
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+// Helper to set the auth header
+export const setAuthHeader = (token: string | null) => {
+  if (token) {
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete axiosInstance.defaults.headers.common['Authorization'];
+  }
+};
 
 export const logoutUser = async () => {
   try {
@@ -74,3 +90,17 @@ export const logoutUser = async () => {
     
   }
 }
+
+export const fetchUserData = async (userId: number | undefined) => {
+  try {
+    console.log(`Fetching user data for user id ${userId}`);
+    const response = await axiosInstance.post('/auth/user',{
+      id: userId
+    });
+    return response.data;
+  } catch (error) {
+    console.log(`Error while fetching user data ${error}`);
+    throw error;
+    
+  }
+};
