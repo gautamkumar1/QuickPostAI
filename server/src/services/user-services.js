@@ -24,8 +24,8 @@ const generateRefreshToken = async (user) => {
             username: user.username,
             email: user.email
         },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
     );
     return token;
 };
@@ -53,4 +53,57 @@ const createUser = async (userData) =>{
         return error;
     }
 }
-export { isPasswordValid, generateAccessToken,generateRefreshToken,createUser,hashRefreshToken,isValidToken }
+const createTokens = async (user) => {
+    // Access token - short lived
+    const accessToken = await generateAccessToken(user)
+    
+    // Refresh token - longer lived
+    const refreshToken = await generateRefreshToken(user);
+    
+    return { accessToken, refreshToken };
+  };
+
+
+
+  const COOKIE_SECURE = process.env.NODE_ENV === 'production'
+  const COOKIE_HTTPONLY = true
+  const COOKIE_SAMESITE = process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+  const setCookies = (res, accessToken, refreshToken) => {
+    /*
+    /// ***** ALWAYS SET THE MAX AGE EQUAL TO TOKEN EXPIRY ***** ///
+     */
+    // Set access token cookie
+    res.cookie('accessToken', accessToken, {
+      httpOnly: COOKIE_HTTPONLY, 
+      secure: COOKIE_SECURE, 
+      sameSite: COOKIE_SAMESITE, 
+      maxAge: process.env.ACCESS_TOKEN_EXPIRY === '15m' ? 15 * 60 * 1000 : parseInt(process.env.ACCESS_TOKEN_EXPIRY) // Convert to milliseconds
+    });
+    
+    // Set refresh token cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: COOKIE_HTTPONLY,
+      secure: COOKIE_SECURE,
+      sameSite: COOKIE_SAMESITE,
+      path: '/api/v1/auth/refreshToken', // Only sent to refresh token endpoint
+      maxAge: process.env.REFRESH_TOKEN_EXPIRY === '7d' ? 7 * 24 * 60 * 60 * 1000 : parseInt(process.env.REFRESH_TOKEN_EXPIRY) // Convert to milliseconds
+    });
+  };
+  const clearCookies = (res) => {
+    res.cookie('accessToken', {
+        httpOnly: COOKIE_HTTPONLY,
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAMESITE,
+        expires: new Date(0) // Expire immediately
+    });
+
+    res.cookie('refreshToken', {
+        httpOnly: COOKIE_HTTPONLY,
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAMESITE,
+        path: '/api/v1/auth/refreshToken', // Same path as when setting the cookie
+        expires: new Date(0) // Expire immediately
+    });
+};
+
+export { isPasswordValid, generateAccessToken,generateRefreshToken,createUser,hashRefreshToken,isValidToken,createTokens,setCookies,clearCookies }

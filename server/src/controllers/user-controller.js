@@ -1,32 +1,32 @@
 import { prisma } from "../database/db.config.js";
-import { createUser, generateAccessToken, generateRefreshToken, hashRefreshToken, isPasswordValid, isValidToken } from "../services/user-services.js";
+import { clearCookies, createTokens, createUser, generateAccessToken, generateRefreshToken, hashRefreshToken, isPasswordValid, isValidToken, setCookies } from "../services/user-services.js";
 import jwt from "jsonwebtoken"
 const registerUser = async (req, res) => {
     try {
-        const {username,email,password} = req.body;
-        if(!email || !password || !username){
-            return res.status(400).json({ message: "All are required"});
+        const { username, email, password } = req.body;
+        if (!email || !password || !username) {
+            return res.status(400).json({ message: "All are required" });
         }
-        if(username.length < 3){
-            return res.status(400).json({ message: "Username must be at least 3 characters"});
+        if (username.length < 3) {
+            return res.status(400).json({ message: "Username must be at least 3 characters" });
         }
-        if(password.length < 6){
-            return res.status(400).json({ message: "Password must be at least 6 characters"});
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters" });
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({ message: "Invalid email format" });
         }
-        const isUserExists = await prisma.user.findUnique({where:{email:email}});
-        if(isUserExists){
-            return res.status(400).json({ message: "User already exists"});
+        const isUserExists = await prisma.user.findUnique({ where: { email: email } });
+        if (isUserExists) {
+            return res.status(400).json({ message: "User already exists" });
         }
         const user = await createUser(req.body);
-        return res.status(201).json({ message: "User created successfully",user});
+        return res.status(200).json({ message: "Register successful", user });
     } catch (error) {
         console.log(`Error while registering user`);
         return res.status(500).json({ error: error.message });
-        
+
     }
 }
 
@@ -46,12 +46,11 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Incorrect password" });
         }
 
-        const accessToken = await generateAccessToken(isUserFound);
-        const refreshToken = await generateRefreshToken(isUserFound);
+        const { accessToken, refreshToken } = await createTokens(isUserFound);
         const hashedRefreshToken = await hashRefreshToken(refreshToken);
         // store refresh token in db
         await prisma.user.update({
-            where: { id:isUserFound.id },
+            where: { id: isUserFound.id },
             data: { refreshToken: hashedRefreshToken },
         });
 
@@ -63,23 +62,8 @@ const loginUser = async (req, res) => {
                 email: true
             }
         });
-// Always set the maxAge time equal to the refresh token expiry time bcz it will not forced user to login again before the expiry time of refresh token
-        const options = {
-            httpOnly: true,
-            secure: true,
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            sameSite: "none"
-        };
-
-        return res
-            .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options)
-            .json({
-                message: "User logged in successfully",
-                loggedInUser: loggedInUser,
-                accessToken: accessToken,
-            });
+        setCookies(res, accessToken, refreshToken);
+        return res.status(200).json({ message: "Login successful", user: loggedInUser, accessToken: accessToken });
     } catch (error) {
         console.error("Error while logging in user:", error);
         return res.status(500).json({ error: error.message });
@@ -96,16 +80,9 @@ const logoutUser = async (req, res) => {
             where: { id: userId },
             data: { refreshToken: null },
         });
-        const options = {
-            httpOnly: true,
-            secure: true,
-            maxAge: 0, 
-            sameSite: "none"
-        };
-        res.clearCookie("accessToken",options);
-        res.clearCookie("refreshToken",options);
+        clearCookies(res);
         return res.status(200).json({ message: "User logged out successfully" });
-        
+
     } catch (error) {
         console.log(`Error while logging out user, ${error}`);
         return res.status(500).json({ error: error.message });
@@ -114,50 +91,74 @@ const logoutUser = async (req, res) => {
 
 const refreshAccessToken = async (req, res) => {
     try {
+        // Retrieve refresh token from cookies or Authorization header
         const incomingRefreshToken = req.cookies.refreshToken || req.header("Authorization")?.replace("Bearer ", "");
-        if(!incomingRefreshToken){
-            return res.status(401).json({message: "Unauthorized request"})
+
+        if (!incomingRefreshToken) {
+            return res.status(401).json({ message: "Refresh token not found" });
         }
+
+        // Verify refresh token
         let verifyingUser;
         try {
             verifyingUser = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
         } catch (error) {
             return res.status(401).json({ message: "Invalid or expired refresh token" });
         }
-        const isUserExist = await prisma.user.findUnique({where:{id: verifyingUser.id}})
-        if(!isUserExist){
-            return res.status(401).json({message: "Invalid Refresh Token"})
+
+        // Fetch user from database
+        const isUserExist = await prisma.user.findUnique({ where: { id: verifyingUser.id } });
+        if (!isUserExist) {
+            return res.status(401).json({ message: "Invalid Refresh Token" });
         }
-        const isRefreshTokenValid = await isValidToken(incomingRefreshToken,isUserExist.refreshToken);
-        if(!isRefreshTokenValid){
+        const isRefreshTokenValid = await isValidToken(incomingRefreshToken, isUserExist.refreshToken);
+        
+        if (!isRefreshTokenValid) {
             return res.status(401).json({ message: "Refresh token is expired or used" });
         }
-        const accessToken = await generateAccessToken(isUserExist);
-        const newRefreshToken = await generateRefreshToken(isUserExist);
-        const hashedRefreshToken = await hashRefreshToken(newRefreshToken);
+
+        // Generate new access and refresh tokens
+        const { accessToken, refreshToken } = await createTokens(isUserExist);
+
+        // Hash and store new refresh token
+        const hashedRefreshToken = await hashRefreshToken(refreshToken);
         await prisma.user.update({
-            where:{id:isUserExist.id},
-            data:{
-                refreshToken:hashedRefreshToken
-            }
-        })
-        const options = {
-            httpOnly: true,
-            secure: true,
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            sameSite: "none"
-        };
-        return res
-            .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", newRefreshToken, options)
-            .json({
-                message: "Access token refreshed",
-                accessToken: accessToken,
-            });
+            where: { id: isUserExist.id },
+            data: { refreshToken: hashedRefreshToken },
+        });
+
+        console.log(`[SUCCESS] Refreshed access token for user: ${isUserExist.username}`);
+
+        // Set new tokens in cookies and response
+        setCookies(res, accessToken, refreshToken);
+        return res.status(200).json({
+            success: true,
+            message: "Token refreshed successfully",
+            accessToken: accessToken,
+        });
+
     } catch (error) {
-        console.log(error);
-        return res.status(401).json({message:"Error while refreshing access token"})
+        console.error("[ERROR] Unexpected error while refreshing token:", error);
+
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: "Refresh token is invalid or expired"
+            });
+        }
+
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+const getUser = async (req, res) => {
+    try {
+        const {id} = req.body;
+        const userData = await prisma.user.findUnique({where:{id:id},select:{id:true,username:true,email:true}});
+        return res.status(200).json({userData:userData});
+    } catch (error) {
+        console.log(`Error while fetching user data, ${error}`);
+        return res.status(500).json({error:error.message});
     }
 }
-export { registerUser,loginUser,logoutUser,refreshAccessToken }
+export { registerUser, loginUser, logoutUser, refreshAccessToken,getUser }
