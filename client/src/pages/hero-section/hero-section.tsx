@@ -2,7 +2,6 @@ import { ArrowRight } from 'lucide-react'
 import { Button } from '../../components/ui/button'
 import { TextEffect } from '../../components/ui/text-effect'
 import { AnimatedGroup } from '../../components/ui/animated-group'
-import { HeroHeader } from '../../components/hero5-header'
 import {Link} from "react-router-dom"
 const transitionVariants = {
     item: {
@@ -27,7 +26,7 @@ const transitionVariants = {
 export default function HeroSection() {
     return (
         <>
-            <HeroHeader />
+            
             <main className="overflow-hidden">
                 <div
                     aria-hidden
@@ -77,7 +76,7 @@ export default function HeroSection() {
                             <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
                                 <AnimatedGroup variants={transitionVariants}>
                                     <Link
-                                        to="#link"
+                                        to="/"
                                         className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
                                         <span className="text-foreground text-sm">Meet QuickPostAI - Your AI-Powered X Post Maker
                                         </span>

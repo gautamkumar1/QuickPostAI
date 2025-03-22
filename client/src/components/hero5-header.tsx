@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Link as ScrollLink } from 'react-scroll';
 import { Logo } from './logo'
 import { LogOut, Menu, X } from 'lucide-react'
 import React from 'react'
@@ -10,8 +11,8 @@ import { useMutation } from '@tanstack/react-query'
 import { logoutUser } from '@/Api/api'
 import useAuthStore from '@/zustand/authStore'
 const menuItems = [
-    { name: 'Features', href: '#features' },
-    { name: 'Solution', href: '#link' },
+    { name: 'Features', href: 'features' },
+    { name: 'How it works', href: 'how-it-works' },
     { name: 'Pricing', href: '#link' },
     { name: 'About', href: '#link' },
 ]
@@ -64,11 +65,10 @@ export const HeroHeader = () => {
                         <div className="flex w-full justify-between lg:w-auto">
                             <Link
                                 to="/"
-                                aria-label="home"
                                 className="flex items-center space-x-2">
                                 <Logo />
+                                
                             </Link>
-
                             <button
                                 onClick={() => setMenuState(!menuState)}
                                 aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
@@ -82,11 +82,13 @@ export const HeroHeader = () => {
                             <ul className="flex gap-8 text-sm">
                                 {menuItems.map((item, index) => (
                                     <li key={index}>
-                                        <Link
+                                        <ScrollLink
                                             to={item.href}
+                                            smooth={true}
+                                            duration={500}
                                             className="text-muted-foreground hover:text-accent-foreground block duration-150">
                                             <span>{item.name}</span>
-                                        </Link>
+                                        </ScrollLink>
                                     </li>
                                 ))}
                             </ul>
@@ -97,11 +99,13 @@ export const HeroHeader = () => {
                                 <ul className="space-y-6 text-base">
                                     {menuItems.map((item, index) => (
                                         <li key={index}>
-                                            <Link
+                                            <ScrollLink
                                                 to={item.href}
+                                                smooth={true} 
+                                                duration={500}
                                                 className="text-muted-foreground hover:text-accent-foreground block duration-150">
                                                 <span>{item.name}</span>
-                                            </Link>
+                                            </ScrollLink>
                                         </li>
                                     ))}
                                 </ul>

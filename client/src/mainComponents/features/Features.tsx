@@ -42,31 +42,31 @@ const FeaturesData = [
 
 const FeatureSectionQuickPostAI = () => {
   return (
-    <div className='py-10 px-5'>
-      <h2 className='text-center text-3xl font-bold mb-6'>Why Choose QuickPostAI?</h2>
-      <div>
-      <div className="grid w-full grid-cols-2 gap-x-10 md:grid-cols-3">
-        {FeaturesData.map((feature) => (
-          <motion.div
-            whileHover={{ y: -8 }}
-            transition={{ type: 'spring', bounce: 0.7 }}
-            key={feature.id}
-            className="mt-5 text-left"
-          >
-            <div className="flex items-center mb-3">
-              {feature.icon}
-            </div>
-            <div className="mb-1 text-sm font-medium text-gray-900 dark:text-gray-100">
-              {feature.name}
-            </div>
-            <div className="max-w-[250px] text-sm font-normal text-gray-500 dark:text-gray-500">
-              {feature.description}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+    <div className='flex flex-col items-center justify-center py-10 px-5'>
+    <h2 className='text-center text-3xl font-bold mb-6'>Why Choose QuickPostAI?</h2>
+    <div>
+    <div className="grid w-full grid-cols-2 gap-x-10 md:grid-cols-3">
+      {FeaturesData.map((feature) => (
+        <motion.div
+          whileHover={{ y: -8 }}
+          transition={{ type: 'spring', bounce: 0.7 }}
+          key={feature.id}
+          className="mt-5 text-left"
+        >
+          <div className="flex items-center mb-3">
+            {feature.icon}
+          </div>
+          <div className="mb-1 text-sm font-medium text-gray-900 dark:text-gray-100">
+            {feature.name}
+          </div>
+          <div className="max-w-[250px] text-sm font-normal text-gray-500 dark:text-gray-500">
+            {feature.description}
+          </div>
+        </motion.div>
+      ))}
     </div>
-    </div>
+  </div>
+  </div>
   );
 };
 
