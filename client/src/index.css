@@ -2,7 +2,40 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* Default variables */
+:root {
+  --duration: 20s;
+  --gap: 1rem;
+}
 
+/* Keyframes */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100% - var(--gap))); }
+}
+
+@keyframes marquee-vertical {
+  from { transform: translateY(0); }
+  to { transform: translateY(calc(-100% - var(--gap))); }
+}
+
+/* Custom utilities */
+.animate-marquee {
+  animation: marquee var(--duration) linear infinite;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration) linear infinite;
+}
+
+/* Optional: Scoped overrides */
+.marquee-slow {
+  --duration: 40s;
+}
+
+.marquee-fast {
+  --duration: 10s;
+}
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

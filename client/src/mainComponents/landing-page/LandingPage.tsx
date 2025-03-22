@@ -4,6 +4,7 @@ import FeatureSectionQuickPostAI from "../features/Features"
 import { HeroHeader } from "@/components/hero5-header"
 import Footer from "../footer/Footer"
 import Faq from "../faq/Faq"
+import { TestimonalsDemo } from "../Testimonals/TestimonalsDemo"
 
 function LandingPage() {
   return (
@@ -19,6 +20,9 @@ function LandingPage() {
         </section>
         <section id="faq">
           <Faq />
+        </section>
+        <section id="testimonials">
+          <TestimonalsDemo />
         </section>
       </main>
       <Footer />
