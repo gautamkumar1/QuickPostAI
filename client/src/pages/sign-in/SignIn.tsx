@@ -13,7 +13,7 @@ import {
 import { useState } from 'react'
 import { LoginData } from '@/types/type'
 import { useMutation } from '@tanstack/react-query'
-import { loginUser, setAuthHeader } from '@/Api/api'
+import { loginUser } from '@/Api/api'
 import useAuthStore from '@/zustand/authStore'
 
 
@@ -41,13 +41,13 @@ export default function SignInForm() {
             alert("Sign in successful");
             if(data.accessToken){
                 useAuthStore.setState({isAuthenticated:true,token:data.accessToken,user:data.user});
+                localStorage.setItem("accessToken",data.accessToken);
             }
             setFormdata({email: "", password: ""});
-            setAuthHeader(data.accessToken);
+            
           },
           onError: (error:Error) => {
             useAuthStore.setState({isAuthenticated:false,token:undefined,user:undefined});
-            setAuthHeader(null);
             let errorMessage = "Sign in failed";
         
             const err = error as Error & { response?: { data?: { message?: string } } };

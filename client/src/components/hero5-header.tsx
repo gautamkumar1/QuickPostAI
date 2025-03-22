@@ -7,7 +7,7 @@ import { RegisterButton } from '@/pages/sign-up/SignUp'
 import { LoginButton } from '@/pages/sign-in/SignIn'
 import { Button } from './ui/button'
 import { useMutation } from '@tanstack/react-query'
-import { logoutUser, setAuthHeader } from '@/Api/api'
+import { logoutUser } from '@/Api/api'
 import useAuthStore from '@/zustand/authStore'
 const menuItems = [
     { name: 'Features', href: '#link' },
@@ -42,7 +42,7 @@ export const HeroHeader = () => {
         e.preventDefault();
         mutation.mutate();
         localStorage.removeItem("auth-storage");
-        setAuthHeader(null);
+        localStorage.removeItem("accessToken");
         window.location.reload();
     }
     React.useEffect(() => {

@@ -31,32 +31,60 @@ export const loginUser = async (data : LoginData): Promise<any> => {
   }
 }
 
+
+
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    const token = axiosInstance.defaults.headers.common['Authorization'];
+    if (!token) {
+      const savedToken = localStorage.getItem("accessToken"); // Load from localStorage
+      if (savedToken) {
+        config.headers['Authorization'] = `Bearer ${savedToken}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// *** Fix: Use a Shared Promise to Prevent Multiple Calls
 // Add interceptor to handle token expiration
+let refreshTokenPromise: Promise<any> | null = null;
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
     
-    // If error is 401 (Unauthorized) and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
+      if (!refreshTokenPromise) {
+        refreshTokenPromise = refreshTokens()
+          .then((data) => {
+            refreshTokenPromise = null;
+            return data;
+          })
+          .catch((refreshError) => {
+            refreshTokenPromise = null;
+            window.location.href = "/";
+            return Promise.reject(refreshError);
+          });
+      }
+
       try {
-        // Try to refresh the token
-        await refreshTokens();
-        
-        // If refresh successful, retry the original request
-        return axiosInstance(originalRequest);
+        await refreshTokenPromise;
+        return axiosInstance(originalRequest); // Retry original request
       } catch (refreshError) {
-        // If refresh fails, redirect to login
-        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
+
+
 // Function to refresh tokens
 export const refreshTokens = async () => {
   try {
@@ -64,19 +92,16 @@ export const refreshTokens = async () => {
     
     // Set the new access token in auth header for future requests
     if (response.data.accessToken) {
-      setAuthHeader(response.data.accessToken);
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+      const savedToken = localStorage.getItem("accessToken");
+      if (savedToken) {
+        localStorage.removeItem("accessToken");
+      }
+      localStorage.setItem("accessToken", response.data.accessToken);
     }
     return response.data;
   } catch (error) {
     throw error;
-  }
-};
-// Helper to set the auth header
-export const setAuthHeader = (token: string | null) => {
-  if (token) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete axiosInstance.defaults.headers.common['Authorization'];
   }
 };
 

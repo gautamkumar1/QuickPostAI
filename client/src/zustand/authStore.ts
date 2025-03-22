@@ -1,4 +1,3 @@
-import { setAuthHeader } from "@/Api/api";
 import { UserData } from "@/types/type";
 import { create, } from "zustand";
 import { persist } from "zustand/middleware";
@@ -20,15 +19,8 @@ const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage', // Name for localStorage
-      onRehydrateStorage: () => (state) => {
-        // When state is rehydrated from storage
-        if (state && state.isAuthenticated && state.user) {
-          // Set the auth header with the stored token
-          if (state.token) {
-            setAuthHeader(state.token);
-          }
-        }
-      },
+      partialize:
+        (state) => ({ isAuthenticated: state.isAuthenticated, token: state.token, user: state.user }), // Only persist the token and isAuthenticated
     }
     ) 
     
