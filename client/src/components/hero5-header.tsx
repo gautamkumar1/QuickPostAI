@@ -10,7 +10,7 @@ import { useMutation } from '@tanstack/react-query'
 import { logoutUser } from '@/Api/api'
 import useAuthStore from '@/zustand/authStore'
 const menuItems = [
-    { name: 'Features', href: '#link' },
+    { name: 'Features', href: '#features' },
     { name: 'Solution', href: '#link' },
     { name: 'Pricing', href: '#link' },
     { name: 'About', href: '#link' },
