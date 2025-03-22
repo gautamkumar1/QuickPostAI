@@ -3,6 +3,7 @@ import HowItWorks from "../how-it-works/HowItWorks"
 import FeatureSectionQuickPostAI from "../features/Features"
 import { HeroHeader } from "@/components/hero5-header"
 import Footer from "../footer/Footer"
+import Faq from "../faq/Faq"
 
 function LandingPage() {
   return (
@@ -15,7 +16,9 @@ function LandingPage() {
         </section>
         <section id="features">
           <FeatureSectionQuickPostAI />
-
+        </section>
+        <section id="faq">
+          <Faq />
         </section>
       </main>
       <Footer />

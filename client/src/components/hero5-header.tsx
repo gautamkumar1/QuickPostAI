@@ -13,7 +13,7 @@ import useAuthStore from '@/zustand/authStore'
 const menuItems = [
     { name: 'Features', href: 'features' },
     { name: 'How it works', href: 'how-it-works' },
-    { name: 'Pricing', href: '#link' },
+    { name: 'Faq', href: 'faq' },
     { name: 'About', href: '#link' },
 ]
 
