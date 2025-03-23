@@ -20,21 +20,21 @@ const menuItems = [
 export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-    const {isAuthenticated} = useAuthStore();
+    const { isAuthenticated } = useAuthStore();
     const mutation = useMutation(({
-        mutationFn:logoutUser,
-        onSuccess: (data) =>{
+        mutationFn: logoutUser,
+        onSuccess: (data) => {
             console.log(`User logged out successfully, ${data}`);
             alert("Logged out successfully");
         },
-        onError: (error:Error) => {
+        onError: (error: Error) => {
             let errorMessage = "Log out failed";
-        
+
             const err = error as Error & { response?: { data?: { message?: string } } };
             if (err.response && err.response.data) {
-              errorMessage = err.response.data.message || errorMessage;
+                errorMessage = err.response.data.message || errorMessage;
             }
-            
+
             console.log(`Error logging out user: ${errorMessage}`);
             alert(errorMessage);
         }
@@ -49,7 +49,7 @@ export const HeroHeader = () => {
     React.useEffect(() => {
         const handleScroll = () => {
             console.log(`isLoggedIn ${isAuthenticated}`);
-            
+
             setIsScrolled(window.scrollY > 50)
         }
         window.addEventListener('scroll', handleScroll)
@@ -68,8 +68,10 @@ export const HeroHeader = () => {
                                 smooth={true}
                                 duration={500}
                                 className="flex items-center space-x-2">
-                                <Logo />
-                                
+
+                                <Logo className="w-14 h-14" />
+
+
                             </ScrollLink>
                             <button
                                 onClick={() => setMenuState(!menuState)}
@@ -103,7 +105,7 @@ export const HeroHeader = () => {
                                         <li key={index}>
                                             <ScrollLink
                                                 to={item.href}
-                                                smooth={true} 
+                                                smooth={true}
                                                 duration={500}
                                                 className="text-muted-foreground hover:text-accent-foreground block duration-150">
                                                 <span>{item.name}</span>
@@ -114,19 +116,19 @@ export const HeroHeader = () => {
                             </div>
                             <div className="flex w-full flex-col space-y-2 sm:flex-row sm:items-center sm:gap-2 sm:space-y-0 md:w-fit">
                                 {
-                                    isAuthenticated ? 
-                                    (<>
-                                    <Button variant="destructive" className="flex items-center gap-2 w-full sm:w-auto" onClick={handleLogout}>
-                                    <LogOut className="h-4 w-4" />
-                                    <span>Logout</span>
-                                </Button>
-                                    </>) : 
-                                    (<>
-                                    <LoginButton />
-                                    <RegisterButton />
-                                    </>)
+                                    isAuthenticated ?
+                                        (<>
+                                            <Button variant="destructive" className="flex items-center gap-2 w-full sm:w-auto" onClick={handleLogout}>
+                                                <LogOut className="h-4 w-4" />
+                                                <span>Logout</span>
+                                            </Button>
+                                        </>) :
+                                        (<>
+                                            <LoginButton />
+                                            <RegisterButton />
+                                        </>)
                                 }
-                                
+
                             </div>
                         </div>
                     </div>
