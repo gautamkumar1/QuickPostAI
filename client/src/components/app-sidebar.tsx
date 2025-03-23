@@ -1,24 +1,19 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { AudioWaveform, BookOpen, Calendar, Command, CreditCard, GalleryVerticalEnd, Home, LogOut, PenSquare, Settings, Twitter, User } from "lucide-react"
+import { AudioWaveform, BookOpen, Calendar, Command, GalleryVerticalEnd, Home, PenSquare } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { Separator } from "@radix-ui/react-separator";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { cn } from "@/lib/utils";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { NavUser } from "./nav-user";
 
 
@@ -77,9 +72,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <CustomLogo />
           </div>
           <div className="flex flex-col gap-0.5 leading-none">
-              <span className="font-semibold text-primary">QuickPost AI</span>
-              
+              <span className="font-semibold text-foreground">QuickPost AI</span>
             </div>
+            
         </div>
 
             </SidebarMenuButton>

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { ArrowRight, Twitter } from "lucide-react"
+import { ArrowRight, X } from "lucide-react"
 
 import { Button } from "../components/ui/button"
 import { Card, CardContent } from "../components/ui/card"
@@ -18,8 +18,8 @@ export function FeatureHighlight() {
                 attention.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button className="gap-2 bg-[#1DA1F2] text-white hover:bg-[#1a94df]">
-                  <Twitter className="h-4 w-4" />
+                <Button className="gap-2 bg-[#476b25] text-white hover:bg-[#455a32]">
+                  <X className="h-4 w-4" />
                   Try It Now
                 </Button>
                 <Button variant="outline" className="gap-1">
@@ -32,7 +32,7 @@ export function FeatureHighlight() {
               <div className="relative h-48 w-48">
                 <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl"></div>
                 <div className="relative flex h-full w-full items-center justify-center rounded-xl bg-card/50 p-4 backdrop-blur-sm">
-                  <Twitter className="h-24 w-24 text-primary/80" />
+                  <X className="h-24 w-24 text-primary/80" />
                 </div>
               </div>
             </div>
