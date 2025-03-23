@@ -2,7 +2,9 @@ import { ArrowRight } from 'lucide-react'
 import { Button } from '../../components/ui/button'
 import { TextEffect } from '../../components/ui/text-effect'
 import { AnimatedGroup } from '../../components/ui/animated-group'
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
+import { HeroVideoDialogDemoTopInBottomOut } from '@/mainComponents/hero-video/HeroVideoDialogDemo'
+import herovideo from "../../../video/quickposthero.mp4"
 const transitionVariants = {
     item: {
         hidden: {
@@ -26,7 +28,7 @@ const transitionVariants = {
 export default function HeroSection() {
     return (
         <>
-            
+
             <main className="overflow-hidden">
                 <div
                     aria-hidden
@@ -77,13 +79,13 @@ export default function HeroSection() {
                                 <AnimatedGroup variants={transitionVariants}>
                                     <Link
                                         to="/"
-                                        className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
-                                        <span className="text-foreground text-sm">Meet QuickPostAI - Your AI-Powered X Post Maker
+                                        className="bg-background dark:border-t-border group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
+                                        <span className="text-foreground text-sm">✨ Meet QuickPostAI
                                         </span>
                                         <span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
 
-                                        <div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
-                                            <div className="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
+                                        <div className="bg-muted size-6 overflow-hidden rounded-full duration-500">
+                                            <div className="flex w-12 translate-x-0 duration-500 ease-in-out">
                                                 <span className="flex size-6">
                                                     <ArrowRight className="m-auto size-3" />
                                                 </span>
@@ -151,7 +153,7 @@ export default function HeroSection() {
                             </div>
                         </div>
 
-                        <AnimatedGroup
+                        {/* <AnimatedGroup
                             variants={{
                                 container: {
                                     visible: {
@@ -185,10 +187,43 @@ export default function HeroSection() {
                                     />
                                 </div>
                             </div>
-                        </AnimatedGroup>
+                        </AnimatedGroup> */}
+                        <AnimatedGroup
+    variants={{
+        container: {
+            visible: {
+                transition: {
+                    staggerChildren: 0.05,
+                    delayChildren: 0.75,
+                },
+            },
+        },
+        ...transitionVariants,
+    }}>
+    <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20">
+        <div
+            aria-hidden
+            className="bg-linear-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
+        />
+        <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
+            <video
+                className="aspect-15/8 w-full relative rounded-2xl"
+                autoPlay
+                loop
+                muted
+                playsInline
+            >
+                <source src={herovideo} type="video/mp4" className="dark:block hidden" />
+                {/* <source src="/your-video-light.mp4" type="video/mp4" className="dark:hidden block" /> */}
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+</AnimatedGroup>
+                        
                     </div>
                 </section>
-                
+
             </main>
         </>
     )

@@ -11,7 +11,9 @@ function LandingPage() {
     <div className="min-h-screen">
      <HeroHeader />
       <main>
+      <section id="home">
       <HeroSection />
+      </section>
         <section id="how-it-works">
         <HowItWorks/>
         </section>
