@@ -60,7 +60,8 @@ const loginUser = async (req, res) => {
             select: {
                 id: true,
                 username: true,
-                email: true
+                email: true,
+                avatarUrl: true
             }
         });
         setCookies(res, accessToken, refreshToken);

@@ -2,7 +2,6 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { prisma } from "../database/db.config.js";
 import logger from "../../logger.js";
-
 const isPasswordValid = async (password, hashedPassword) => {
     return await bcrypt.compare(password, hashedPassword)
 }
@@ -39,12 +38,14 @@ const isValidToken = async (refreshToken,hashedRefreshToken) =>{
 const createUser = async (userData) =>{
     try {
         const {email,password,username} = userData;
+        const avatarUrl = `https://api.dicebear.com/9.x/adventurer/svg?seed=${username}`
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await prisma.user.create({
             data: {
                 username: username,
                 email: email,
                 password: hashedPassword,
+                avatarUrl: avatarUrl
             }
         })
         const newCreatedUser = await prisma.user.findUnique({where:{email:email},select:{id:true,username:true,email:true,refreshToken:true}});
