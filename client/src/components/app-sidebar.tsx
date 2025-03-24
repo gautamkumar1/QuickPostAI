@@ -51,23 +51,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
+            <Link to="/">
             <SidebarMenuButton size="lg">
             <div className="flex items-center gap-2">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Link to="/">
+            
               <CustomLogo />
-            </Link>
           </div>
           <div className="flex flex-col gap-0.5 leading-none">
-          <Link to="/">
-             
+          
               <span className="font-semibold text-foreground">QuickPost AI</span>
-            </Link>
             </div>
             
         </div>
 
             </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

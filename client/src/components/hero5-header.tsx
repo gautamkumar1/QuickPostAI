@@ -1,4 +1,4 @@
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { Link as ScrollLink } from 'react-scroll';
 import { Logo } from './logo'
 import { LogOut, Menu, X } from 'lucide-react'
@@ -127,6 +127,12 @@ export const HeroHeader = () => {
                                                 <LogOut className="h-4 w-4" />
                                                 <span>Logout</span>
                                             </Button>
+                                            <Link to="/dashboard/convert-blog">
+                                            <Button  className="flex items-center gap-2 w-full sm:w-auto">
+                                                
+                                                <span>Dashboard</span>
+                                            </Button>
+                                            </Link>
                                         </>) :
                                         (<>
                                             <LoginButton />
