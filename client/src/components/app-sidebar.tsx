@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils";
 import { NavUser } from "./nav-user";
+import useAuthStore from "@/zustand/authStore";
 
 
 type NavItem = {
@@ -23,33 +24,17 @@ type NavItem = {
   icon: React.ComponentType<{ className?: string }>;
   isActive: boolean;
 };
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-    ]
-  };
+// const data = {
+//   user: {
+//     name: "shadcn",
+//     email: "m@example.com",
+//     avatar: "/avatars/shadcn.jpg",
+//   },
+//   };
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation()
   const pathname = location.pathname
+  const {user} = useAuthStore();
 
   
 
@@ -101,7 +86,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user as any} />
       </SidebarFooter>
 
       <SidebarRail />

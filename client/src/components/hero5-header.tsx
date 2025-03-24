@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import { Link as ScrollLink } from 'react-scroll';
 import { Logo } from './logo'
 import { LogOut, Menu, X } from 'lucide-react'
@@ -21,11 +21,13 @@ export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
     const { isAuthenticated } = useAuthStore();
+    const navigate = useNavigate()
     const mutation = useMutation(({
         mutationFn: logoutUser,
         onSuccess: (data) => {
             console.log(`User logged out successfully, ${data}`);
             alert("Logged out successfully");
+            navigate("/");
         },
         onError: (error: Error) => {
             let errorMessage = "Log out failed";
