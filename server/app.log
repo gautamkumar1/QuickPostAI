@@ -183,3 +183,15 @@
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"GET\",\"url\":\"/api/v1/getTweetsDetails\",\"status\":\"200\",\"responseTime\":\"418.217\"}","timestamp":"2025-03-24T09:37:24.233Z"}
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"OPTIONS\",\"url\":\"/api/v1/auth/signin\",\"status\":\"204\",\"responseTime\":\"8.113\"}","timestamp":"2025-03-24T09:47:44.015Z"}
 {"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/auth/signin\",\"status\":\"200\",\"responseTime\":\"3116.646\"}","timestamp":"2025-03-24T09:47:47.148Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/auth/logout\",\"status\":\"401\",\"responseTime\":\"14.899\"}","timestamp":"2025-03-24T10:47:56.379Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"OPTIONS\",\"url\":\"/api/v1/auth/signin\",\"status\":\"204\",\"responseTime\":\"1.148\"}","timestamp":"2025-03-24T10:48:14.780Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/auth/signin\",\"status\":\"200\",\"responseTime\":\"2774.374\"}","timestamp":"2025-03-24T10:48:17.562Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"OPTIONS\",\"url\":\"/api/v1/tweetGenerate\",\"status\":\"204\",\"responseTime\":\"2.076\"}","timestamp":"2025-03-24T11:06:12.697Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/tweetGenerate\",\"status\":\"401\",\"responseTime\":\"73.876\"}","timestamp":"2025-03-24T11:06:12.795Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"OPTIONS\",\"url\":\"/api/v1/auth/refreshToken\",\"status\":\"204\",\"responseTime\":\"0.266\"}","timestamp":"2025-03-24T11:06:12.810Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"[SUCCESS] Refreshed access token for user: test11","timestamp":"2025-03-24T11:06:15.654Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/auth/refreshToken\",\"status\":\"200\",\"responseTime\":\"2842.339\"}","timestamp":"2025-03-24T11:06:15.662Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/tweetGenerate\",\"status\":\"401\",\"responseTime\":\"10.836\"}","timestamp":"2025-03-24T11:06:15.685Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"OPTIONS\",\"url\":\"/api/v1/tweetGenerate\",\"status\":\"204\",\"responseTime\":\"0.433\"}","timestamp":"2025-03-24T11:06:23.029Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"Summary length :::: 563","timestamp":"2025-03-24T11:06:29.390Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/tweetGenerate\",\"status\":\"200\",\"responseTime\":\"6589.504\"}","timestamp":"2025-03-24T11:06:29.625Z"}

@@ -129,3 +129,20 @@ export const fetchUserData = async (userId: number | undefined) => {
     
   }
 };
+
+/*
+-----> AI TWEET GENERATION API <-----
+*/
+
+export const tweetGenerate = async (url:string) =>{
+  try {
+    const response = await axiosInstance.post('/tweetGenerate',{
+      url
+    })
+    return response.data;
+  } catch (error) {
+    console.log(`Error while generating tweet ${error}`);
+    throw error;
+    
+  }
+}
