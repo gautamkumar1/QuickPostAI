@@ -14,6 +14,7 @@ import {
 import { RegisterData } from '@/types/type'
 import { useState } from 'react'
 import { registerUser } from '@/Api/api'
+import { toast } from 'sonner'
 
 
 
@@ -41,8 +42,8 @@ export const RegisterButton = () => {
     const mutation = useMutation({
       mutationFn: registerUser,
       onSuccess: (data) =>{
-        console.log(`User created successfully, ${data}`);
-        alert("Sign up successful");
+        // console.log(`User created successfully, ${data}`);
+        toast.success("Sign up successful");
         setFormData({username: "", email: "", password: ""});
       },
       onError: (error:Error) => {
@@ -54,7 +55,7 @@ export const RegisterButton = () => {
         }
         
         console.log(`Error creating user: ${errorMessage}`);
-        alert(errorMessage);
+        toast.error(errorMessage);
 
       }
     })

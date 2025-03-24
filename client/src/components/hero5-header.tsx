@@ -10,6 +10,7 @@ import { Button } from './ui/button'
 import { useMutation } from '@tanstack/react-query'
 import { logoutUser } from '@/Api/api'
 import useAuthStore from '@/zustand/authStore'
+import { toast } from 'sonner';
 const menuItems = [
     { name: 'Features', href: 'features' },
     { name: 'How it works', href: 'how-it-works' },
@@ -25,8 +26,8 @@ export const HeroHeader = () => {
     const mutation = useMutation(({
         mutationFn: logoutUser,
         onSuccess: (data) => {
-            console.log(`User logged out successfully, ${data}`);
-            alert("Logged out successfully");
+            // console.log(`User logged out successfully, ${data}`);
+            toast.success("Logged out successfully");
             navigate("/");
         },
         onError: (error: Error) => {
@@ -38,7 +39,7 @@ export const HeroHeader = () => {
             }
 
             console.log(`Error logging out user: ${errorMessage}`);
-            alert(errorMessage);
+            toast.error(errorMessage);
         }
     }))
     const handleLogout = (e: React.FormEvent) => {

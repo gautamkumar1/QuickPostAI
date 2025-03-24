@@ -16,6 +16,7 @@ import { useMutation } from '@tanstack/react-query'
 import { loginUser } from '@/Api/api'
 import useAuthStore from '@/zustand/authStore'
 import {useNavigate} from "react-router-dom"
+import { toast } from 'sonner'
 
 
 export const LoginButton = () => {
@@ -39,8 +40,8 @@ export default function SignInForm() {
     const mutation = useMutation({
           mutationFn: loginUser,
           onSuccess: (data) =>{
-            console.log(`User created successfully, ${data}`);
-            alert("Sign in successful");
+            // console.log(`User created successfully, ${data}`);
+            toast.success("Sign in successful");
             if(data.accessToken){
                 useAuthStore.setState({isAuthenticated:true,token:data.accessToken,user:data.user});
                 localStorage.setItem("accessToken",data.accessToken);
@@ -59,7 +60,7 @@ export default function SignInForm() {
             }
             
             console.log(`Error login user: ${errorMessage}`);
-            alert(errorMessage);
+            toast.error(errorMessage);
     
           }
         })
