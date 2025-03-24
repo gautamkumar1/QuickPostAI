@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { prisma } from "../database/db.config.js";
+import logger from "../../logger.js";
 
 const isPasswordValid = async (password, hashedPassword) => {
     return await bcrypt.compare(password, hashedPassword)
@@ -49,7 +50,7 @@ const createUser = async (userData) =>{
         const newCreatedUser = await prisma.user.findUnique({where:{email:email},select:{id:true,username:true,email:true,refreshToken:true}});
         return newCreatedUser;
     } catch (error) {
-        console.log(`Error creating user, ${error}`);
+        logger.error(`Error creating user, ${error}`);
         return error;
     }
 }

@@ -1,3 +1,4 @@
+import logger from "../../logger.js";
 import { prisma } from "../database/db.config.js";
 import { clearCookies, createTokens, createUser, generateAccessToken, generateRefreshToken, hashRefreshToken, isPasswordValid, isValidToken, setCookies } from "../services/user-services.js";
 import jwt from "jsonwebtoken"
@@ -24,7 +25,7 @@ const registerUser = async (req, res) => {
         const user = await createUser(req.body);
         return res.status(200).json({ message: "Register successful", user });
     } catch (error) {
-        console.log(`Error while registering user`);
+        logger.error(`Error while registering user`);
         return res.status(500).json({ error: error.message });
 
     }
@@ -84,7 +85,7 @@ const logoutUser = async (req, res) => {
         return res.status(200).json({ message: "User logged out successfully" });
 
     } catch (error) {
-        console.log(`Error while logging out user, ${error}`);
+        logger.error(`Error while logging out user, ${error}`);
         return res.status(500).json({ error: error.message });
     }
 }
@@ -127,7 +128,7 @@ const refreshAccessToken = async (req, res) => {
             data: { refreshToken: hashedRefreshToken },
         });
 
-        console.log(`[SUCCESS] Refreshed access token for user: ${isUserExist.username}`);
+        logger.info(`[SUCCESS] Refreshed access token for user: ${isUserExist.username}`);
 
         // Set new tokens in cookies and response
         setCookies(res, accessToken, refreshToken);
@@ -157,7 +158,7 @@ const getUser = async (req, res) => {
         const userData = await prisma.user.findUnique({where:{id:id},select:{id:true,username:true,email:true}});
         return res.status(200).json({userData:userData});
     } catch (error) {
-        console.log(`Error while fetching user data, ${error}`);
+        logger.error(`Error while fetching user data, ${error}`);
         return res.status(500).json({error:error.message});
     }
 }

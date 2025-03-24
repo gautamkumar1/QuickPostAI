@@ -42,6 +42,6 @@ app.use("/api/v1",userRoutes)
 app.use("/api/v1",agentsRoutes)
 connectDB().then(() => {
     app.listen(port, () => {
-        console.log(`Server running on http://localhost:${port}`)
+        logger.info(`Server running on http://localhost:${port}`)
     })
 })

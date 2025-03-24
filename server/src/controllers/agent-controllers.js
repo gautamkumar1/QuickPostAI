@@ -3,6 +3,7 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import {StringOutputParser} from "@langchain/core/output_parsers"
 import { prisma } from "../database/db.config.js";
+import logger from "../../logger.js";
 const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
   modelName: "gemini-2.0-flash",
@@ -54,7 +55,7 @@ const summarizeBlogContent = async (docs) => {
 
 const createTwitterPosts = async (summary) => {
     try {
-      console.log(`Summary length :::: ${summary.length}`);
+      logger.info(`Summary length :::: ${summary.length}`);
       
       const CHARACTER_LIMIT = 250;
       
