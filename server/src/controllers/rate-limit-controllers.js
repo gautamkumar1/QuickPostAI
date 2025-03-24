@@ -1,5 +1,32 @@
 import rateLimit from "express-rate-limit";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+// Fix __dirname in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Create a log file path
+const logFilePath = path.join(__dirname, 'request_logs.txt');
+
+// Function to log IP address
+const logIP = (req, message) => {
+    const logEntry = `${new Date().toISOString()} - IP: ${req.ip} - ${message}\n`;
+    fs.appendFile(logFilePath, logEntry, (err) => {
+        if (err) console.error('Error writing to log file:', err);
+    });
+};
+// Rate limiter: Max 3 requests per day per IP
+const generateLimiter = rateLimit({
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours
+    max: 3, // Limit each IP to 3 requests per day
+    message: { error: "You have reached your daily request limit. Try again tomorrow." },
+    headers: true, // Include rate limit info in response headers
+    handler: (req, res, next) => {
+        logIP(req, "Rate limit exceeded");
+        res.status(429).json({ error: "You have reached your daily request limit. Try again tomorrow." });
+    }
+});
 // Login rate limiter (5 attempts per minute)
 const loginLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
@@ -21,4 +48,4 @@ const registrationLimiter = rateLimit({
     keyGenerator: (req) => req.ip,
 });
 
-export { loginLimiter, registrationLimiter };
+export { loginLimiter, registrationLimiter,generateLimiter };

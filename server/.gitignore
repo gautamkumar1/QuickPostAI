@@ -1,3 +1,4 @@
 node_modules
 .env
 app.log
+request_logs.txt

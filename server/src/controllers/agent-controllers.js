@@ -113,17 +113,23 @@ const tweetGenerate = async (req, res) => {
     if (!url) {
       return res.status(400).json({ message: "URL is required" });
     }
-    const PostStored = await prisma.posts.create({
-      data:{
-        postUrl: url
-      }
-    })
     // 1. Load and scrape web content
     const docs = await loadWebContent(url);
     // 2. Summarize the blog content
     const summary = await summarizeBlogContent(docs);
     // 3. Split into Twitter posts 
     const tweetThread = await createTwitterPosts(summary);
+    console.log(`userId :::: ${req.user.id}`);
+    
+    await prisma.posts.create({
+      data:{
+        userId: req.user.id,
+        postUrl:url,
+        summary:summary,
+        tweets: tweetThread.threads,
+        totalThreads: tweetThread.threads.length
+      }
+    })
     res.status(200).json({
       message: "Tweet thread generated successfully",
       tweetThread: tweetThread,
