@@ -39,7 +39,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   
 
   const navItems: NavItem[] = [
-    { title: "Home", url: "/dashboard", icon: Home, isActive: pathname === "/dashboard" },
+    // { title: "Home", url: "/dashboard", icon: Home, isActive: pathname === "/dashboard" },
     { title: "Convert Blog", url: "/dashboard/convert-blog", icon: BookOpen, isActive: pathname === "/dashboard/convert-blog" },
     { title: "Auto Schedule Post", url: "/dashboard/auto-schedule", icon: Calendar, isActive: pathname === "/dashboard/auto-schedule" },
     { title: "Create Post", url: "/dashboard/create-post", icon: PenSquare, isActive: pathname === "/dashboard/create-post" },
