@@ -16,6 +16,9 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/c
 import { useMutation } from "@tanstack/react-query"
 import { logoutUser } from "@/Api/api"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
+import { QueryClient } from "@tanstack/react-query";
+import useAuthStore from "@/zustand/authStore"
 export function NavUser({
   user,
 }: {
@@ -27,12 +30,15 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const navigate = useNavigate()
+  const queryClient = new QueryClient();
+  const { logout } = useAuthStore();
   const mutation = useMutation(({
     mutationFn: logoutUser,
     onSuccess: (data) => {
         console.log(`User logged out successfully, ${data}`);
-        alert("Logged out successfully");
-        navigate("/");
+        logout();
+        toast.success("Logged out successfully");
+        queryClient.clear();
     },
     onError: (error: Error) => {
         let errorMessage = "Log out failed";
@@ -43,15 +49,13 @@ export function NavUser({
         }
 
         console.log(`Error logging out user: ${errorMessage}`);
-        alert(errorMessage);
+        toast.error(errorMessage);
     }
 }))
 const handleLogout = (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate();
-    localStorage.removeItem("auth-storage");
-    localStorage.removeItem("accessToken");
-    window.location.reload();
+    navigate("/");
 }
   return (
     <SidebarMenu>

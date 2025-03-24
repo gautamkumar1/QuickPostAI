@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { AudioWaveform, BookOpen, Calendar, Command, GalleryVerticalEnd, Home, PenSquare } from "lucide-react"
+import {BookOpen, Calendar, PenSquare } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -54,10 +54,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton size="lg">
             <div className="flex items-center gap-2">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <CustomLogo />
+            <Link to="/">
+              <CustomLogo />
+            </Link>
           </div>
           <div className="flex flex-col gap-0.5 leading-none">
+          <Link to="/">
+             
               <span className="font-semibold text-foreground">QuickPost AI</span>
+            </Link>
             </div>
             
         </div>

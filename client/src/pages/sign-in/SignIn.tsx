@@ -14,9 +14,9 @@ import { useState } from 'react'
 import { LoginData } from '@/types/type'
 import { useMutation } from '@tanstack/react-query'
 import { loginUser } from '@/Api/api'
-import useAuthStore from '@/zustand/authStore'
 import {useNavigate} from "react-router-dom"
 import { toast } from 'sonner'
+import useAuthStore from '@/zustand/authStore'
 
 
 export const LoginButton = () => {
@@ -33,37 +33,64 @@ export const LoginButton = () => {
 };
 export default function SignInForm() {
     const navigate = useNavigate();
+    const { setAuth } = useAuthStore();
     const [formData,setFormdata] = useState<LoginData>({
         email:"",
         password:""
     })
-    const mutation = useMutation({
-          mutationFn: loginUser,
-          onSuccess: (data) =>{
-            // console.log(`User created successfully, ${data}`);
-            toast.success("Sign in successful");
-            if(data.accessToken){
-                useAuthStore.setState({isAuthenticated:true,token:data.accessToken,user:data.user});
-                localStorage.setItem("accessToken",data.accessToken);
-            }
-            setFormdata({email: "", password: ""});
-            navigate("/dashboard");
+    // const mutation = useMutation({
+    //       mutationFn: loginUser,
+    //       onSuccess: (data) =>{
+    //         // console.log(`User created successfully, ${data}`);
+    //         toast.success("Sign in successful");
+    //         if(data.accessToken){
+    //             useAuthStore.setState({isAuthenticated:true,token:data.accessToken,user:data.user});
+    //             localStorage.setItem("accessToken",data.accessToken);
+    //         }
+    //         setFormdata({email: "", password: ""});
+    //         navigate("/dashboard/convert-blog");
             
-          },
-          onError: (error:Error) => {
-            useAuthStore.setState({isAuthenticated:false,token:undefined,user:undefined});
-            let errorMessage = "Sign in failed";
+    //       },
+    //       onError: (error:Error) => {
+    //         useAuthStore.setState({isAuthenticated:false,token:undefined,user:undefined});
+    //         let errorMessage = "Sign in failed";
         
-            const err = error as Error & { response?: { data?: { message?: string } } };
-            if (err.response && err.response.data) {
-              errorMessage = err.response.data.message || errorMessage;
-            }
+    //         const err = error as Error & { response?: { data?: { message?: string } } };
+    //         if (err.response && err.response.data) {
+    //           errorMessage = err.response.data.message || errorMessage;
+    //         }
             
-            console.log(`Error login user: ${errorMessage}`);
-            toast.error(errorMessage);
+    //         console.log(`Error login user: ${errorMessage}`);
+    //         toast.error(errorMessage);
     
+    //       }
+    //     })
+    const mutation = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (data) => {
+          toast.success("Sign in successful");
+      
+          if (data.accessToken) {
+            setAuth(data.user, data.accessToken); // ✅ Update Zustand store
+            localStorage.setItem("accessToken", data.accessToken);
           }
-        })
+      
+          setFormdata({ email: "", password: "" });
+          navigate("/dashboard/convert-blog");
+        },
+        onError: (error: Error) => {
+          useAuthStore.getState().logout(); // ✅ Call logout function
+      
+          let errorMessage = "Sign in failed";
+          const err = error as Error & { response?: { data?: { message?: string } } };
+          if (err.response && err.response.data) {
+            errorMessage = err.response.data.message || errorMessage;
+          }
+      
+          console.log(`Error login user: ${errorMessage}`);
+          toast.error(errorMessage);
+        },
+      });
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             setFormdata({ ...formData, [e.target.name]: e.target.value });
           };
