@@ -140,5 +140,22 @@ const tweetGenerate = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-export { tweetGenerate };
+const getTweetsDetails = async (req, res) => {
+  try {
+    logger.info(`User Id :::: ${req.user.id}`);
+    const id = req.user.id;
+    if(!id){
+      return res.status(400).json({message:"User Id is required"});
+    }
+    const posts = await prisma.posts.findMany({
+      where: {
+        userId: id,
+      },
+    });
+    res.status(200).json({ posts });
+  } catch (error) {
+    logger.error("Error getting tweets:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+export { tweetGenerate,getTweetsDetails };

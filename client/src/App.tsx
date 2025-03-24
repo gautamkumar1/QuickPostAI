@@ -1,19 +1,25 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./mainComponents/landing-page/LandingPage";
 import useAuthStore from "./zustand/authStore";
-import { UserDashboard } from "./components/user-dashboard";
+import ConvertBlog from "./pages/convert-blog/ConvertBlog";
+import { UserDashboard } from "./pages/user-dashboard/UserDashboard";
+import { DashboardHome } from "./mainComponents/dashboard-home/dashboard-home";
+
 function App() {
   const { isAuthenticated } = useAuthStore();
-  
+ 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard" element={<UserDashboard />} />
-        {/* <Route path="/dashboard/*" element={<UserDashboard />}>
-          <Route index element={<h2>Dashboard Home</h2>} />
-          <Route path="post" element={<PostPage />} />
-        </Route> */}
+        {/* --> Dashboard Routes --> */}
+        <Route 
+          path="/dashboard/*" 
+          element={isAuthenticated ? <UserDashboard /> : <h2>Not Authorized</h2>}
+        >
+          <Route index element={<DashboardHome />} />
+          <Route path="convert-blog" element={<ConvertBlog />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

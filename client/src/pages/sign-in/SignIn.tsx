@@ -15,6 +15,7 @@ import { LoginData } from '@/types/type'
 import { useMutation } from '@tanstack/react-query'
 import { loginUser } from '@/Api/api'
 import useAuthStore from '@/zustand/authStore'
+import {useNavigate} from "react-router-dom"
 
 
 export const LoginButton = () => {
@@ -30,6 +31,7 @@ export const LoginButton = () => {
     );
 };
 export default function SignInForm() {
+    const navigate = useNavigate();
     const [formData,setFormdata] = useState<LoginData>({
         email:"",
         password:""
@@ -44,6 +46,7 @@ export default function SignInForm() {
                 localStorage.setItem("accessToken",data.accessToken);
             }
             setFormdata({email: "", password: ""});
+            navigate("/dashboard");
             
           },
           onError: (error:Error) => {

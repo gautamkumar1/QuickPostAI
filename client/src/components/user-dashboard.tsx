@@ -19,6 +19,7 @@ import { FeatureHighlight } from "./feature-highlight"
 import { RecentActivities } from "./recent-activities"
 import { AutoScheduleSection } from "./auto-schedule-section"
 import { CreatePostSection } from "./create-post-section"
+import { Outlet } from "react-router-dom"
 
 const userData = {
   recentConversions: [
@@ -49,7 +50,7 @@ const itemVariants = {
   },
 }
 
-export function UserDashboard() {
+export function UserDashboardDemo() {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -86,6 +87,7 @@ export function UserDashboard() {
               <CreatePostSection />
             </motion.div>
           </motion.div>
+          <Outlet />
         </div>
       </SidebarInset>
     </SidebarProvider>
