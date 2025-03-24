@@ -119,15 +119,14 @@ const tweetGenerate = async (req, res) => {
     const summary = await summarizeBlogContent(docs);
     // 3. Split into Twitter posts 
     const tweetThread = await createTwitterPosts(summary);
-    console.log(`userId :::: ${req.user.id}`);
+    logger.info(`userId :::: ${req.user.id}`);
+    const userIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    logger.info(`UserIP :::: ${userIP}`);
     
     await prisma.posts.create({
       data:{
         userId: req.user.id,
         postUrl:url,
-        summary:summary,
-        tweets: tweetThread.threads,
-        totalThreads: tweetThread.threads.length
       }
     })
     res.status(200).json({

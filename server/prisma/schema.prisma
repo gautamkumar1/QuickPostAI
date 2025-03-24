@@ -26,10 +26,7 @@ model User {
 model Posts {
   id        Int      @id @default(autoincrement())
   userId    Int?
-  postUrl   String
-  summary   String?
-  tweets    Json
-  totalThreads Int?
+  postUrl   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
