@@ -1,35 +1,51 @@
-import HeroSection from "@/pages/hero-section/hero-section"
-import HowItWorks from "../how-it-works/HowItWorks"
-import FeatureSectionQuickPostAI from "../features/Features"
-import { HeroHeader } from "@/components/hero5-header"
-import Footer from "../footer/Footer"
-import Faq from "../faq/Faq"
-import { TestimonalsDemo } from "../Testimonals/TestimonalsDemo"
+import { HeroHeader } from "@/components/hero5-header";
+import Footer from "../footer/Footer";
+import { Suspense, lazy } from "react";
+import HeroSection from "@/pages/hero-section/hero-section";
+
+// Lazy load sections (except HeroSection)
+const HowItWorks = lazy(() => import("../how-it-works/HowItWorks"));
+const FeatureSectionQuickPostAI = lazy(() => import("../features/Features"));
+const Faq = lazy(() => import("../faq/Faq"));
+const TestimonalsDemo = lazy(() => import("../Testimonals/TestimonalsDemo"));
 
 function LandingPage() {
   return (
     <div className="min-h-screen">
-     <HeroHeader />
+      <HeroHeader />
       <main>
-      <section id="home">
-      <HeroSection />
-      </section>
-        <section id="how-it-works">
-        <HowItWorks/>
+        {/* No lazy loading for HeroSection */}
+        <section id="home">
+          <HeroSection />
         </section>
-        <section id="features">
-          <FeatureSectionQuickPostAI />
-        </section>
-        <section id="faq">
-          <Faq />
-        </section>
-        <section id="testimonials">
-          <TestimonalsDemo />
-        </section>
+
+        <Suspense fallback={null}>
+          <section id="how-it-works">
+            <HowItWorks />
+          </section>
+        </Suspense>
+
+        <Suspense fallback={null}>
+          <section id="features">
+            <FeatureSectionQuickPostAI />
+          </section>
+        </Suspense>
+
+        <Suspense fallback={null}>
+          <section id="faq">
+            <Faq />
+          </section>
+        </Suspense>
+
+        <Suspense fallback={null}>
+          <section id="testimonials">
+            <TestimonalsDemo />
+          </section>
+        </Suspense>
       </main>
       <Footer />
     </div>
-  )
+  );
 }
 
-export default LandingPage
+export default LandingPage;
