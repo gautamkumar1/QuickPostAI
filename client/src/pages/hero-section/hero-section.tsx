@@ -156,26 +156,26 @@ export default function HeroSection() {
         },
         ...transitionVariants,
     }}>
-    <div className="relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20">
+    <div className="relative mt-8 overflow-hidden px-2 sm:mt-12 md:mt-20">
         <div
             aria-hidden
             className="bg-linear-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
         />
-        <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
+        <div className="relative mx-auto overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1 ring-background dark:ring-white/20 bg-background max-w-full md:max-w-4xl lg:max-w-6xl">
             <video
-                className="aspect-15/8 w-full relative rounded-2xl"
+                className="w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] lg:max-h-[700px] rounded-2xl object-cover"
                 autoPlay
                 loop
                 muted
                 playsInline
             >
                 <source src={herovideo} type="video/mp4" className="dark:block hidden" />
-                {/* <source src="/your-video-light.mp4" type="video/mp4" className="dark:hidden block" /> */}
                 Your browser does not support the video tag.
             </video>
         </div>
     </div>
 </AnimatedGroup>
+
                         
                     </div>
                 </section>
