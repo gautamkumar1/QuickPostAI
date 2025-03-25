@@ -3,7 +3,7 @@ import { Button } from '../../components/ui/button'
 import { TextEffect } from '../../components/ui/text-effect'
 import { AnimatedGroup } from '../../components/ui/animated-group'
 import { Link } from "react-router-dom"
-import herovideo from "../../../video/quickposthero.mp4"
+import herovideo from "../../../video/quickposthero.webm"
 const transitionVariants = {
     item: {
         hidden: {

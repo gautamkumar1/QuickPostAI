@@ -1,9 +1,9 @@
 
 import HowItWorksCarousel from "@/components/ui/featureCarousel"
-import Image1 from "../../../image/step1.png"
-import Image2 from "../../../image/step2.png"
-import Image3 from "../../../image/step3.png"
-import Image4 from "../../../image/step4.png"
+import Image1 from "../../../image/step 1.webp"
+import Image2 from "../../../image/step 2.webp"
+import Image3 from "../../../image/step 3.webp"
+import Image4 from "../../../image/step 4.webp"
 import { cn } from "@/lib/utils"
 function HowItWorks() {
     return (
