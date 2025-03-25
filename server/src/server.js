@@ -10,7 +10,7 @@ import cors from "cors";
 dotenv.config()
 const app = express()
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL], 
+  origin: [process.env.FRONTEND_URL,process.env.PROD_FRONTEND_URL], 
   methods: "GET,POST,PUT,DELETE", 
   allowedHeaders: "Content-Type,Authorization", 
   credentials: true,
@@ -40,6 +40,9 @@ app.use(cookieParser())
 const port = process.env.PORT
 app.use("/api/v1",userRoutes)
 app.use("/api/v1",agentsRoutes)
+app.get("/", (_, res) => {
+    res.send("Hello server is running")
+})
 connectDB().then(() => {
     app.listen(port, () => {
         logger.info(`Server running on http://localhost:${port}`)
