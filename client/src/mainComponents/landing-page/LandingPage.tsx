@@ -1,9 +1,10 @@
+import LazyLoad from "react-lazyload";
 import { HeroHeader } from "@/components/hero5-header";
 import Footer from "../footer/Footer";
-import { Suspense, lazy } from "react";
-import HeroSection from "@/pages/hero-section/hero-section";
+import { lazy } from "react";
 
-// Lazy load sections (except HeroSection)
+// Lazy load sections
+const HeroSection = lazy(() => import("@/pages/hero-section/hero-section"));
 const HowItWorks = lazy(() => import("../how-it-works/HowItWorks"));
 const FeatureSectionQuickPostAI = lazy(() => import("../features/Features"));
 const Faq = lazy(() => import("../faq/Faq"));
@@ -14,34 +15,35 @@ function LandingPage() {
     <div className="min-h-screen">
       <HeroHeader />
       <main>
-        {/* No lazy loading for HeroSection */}
-        <section id="home">
-          <HeroSection />
-        </section>
+        <LazyLoad height={200} once>
+          <section id="home">
+            <HeroSection />
+          </section>
+        </LazyLoad>
 
-        <Suspense fallback={null}>
+        <LazyLoad height={200} once>
           <section id="how-it-works">
             <HowItWorks />
           </section>
-        </Suspense>
+        </LazyLoad>
 
-        <Suspense fallback={null}>
+        <LazyLoad height={200} once>
           <section id="features">
             <FeatureSectionQuickPostAI />
           </section>
-        </Suspense>
+        </LazyLoad>
 
-        <Suspense fallback={null}>
+        <LazyLoad height={200} once>
           <section id="faq">
             <Faq />
           </section>
-        </Suspense>
+        </LazyLoad>
 
-        <Suspense fallback={null}>
+        <LazyLoad height={200} once>
           <section id="testimonials">
             <TestimonalsDemo />
           </section>
-        </Suspense>
+        </LazyLoad>
       </main>
       <Footer />
     </div>

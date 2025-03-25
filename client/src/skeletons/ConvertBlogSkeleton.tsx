@@ -3,11 +3,6 @@
 const ConvertBlogSkeleton = () => {
   return (
     <div className="min-h-screen bg-zinc-900 text-white animate-pulse">
-      {/* Header Skeleton */}
-      <header className="container mx-auto py-6 px-4 flex justify-between items-center">
-        <div className="h-8 w-24 bg-zinc-700 rounded"></div>
-        <div className="h-8 w-24 bg-zinc-700 rounded"></div>
-      </header>
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
