@@ -4,7 +4,8 @@ import useAuthStore from "./zustand/authStore";
 import ConvertBlog from "./pages/convert-blog/ConvertBlog";
 import { UserDashboard } from "./pages/user-dashboard/UserDashboard";
 import AutoSchedule from "./pages/auto-schedule/AutoSchedule";
-import CreatePost from "./pages/create-post/createPost";
+import CreatePost from "./pages/create-post/CreatePost";
+import UnauthorizedPage from "./pages/unauthorized/Unauthorized";
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -16,7 +17,7 @@ function App() {
         {/* --> Dashboard Routes --> */}
         <Route 
           path="/dashboard/*" 
-          element={isAuthenticated ? <UserDashboard /> : <h2>Not Authorized</h2>}
+          element={isAuthenticated ? <UserDashboard /> : <UnauthorizedPage />}
         >
           {/* <Route index element={<DashboardHome />} /> */}
           <Route index element={<ConvertBlog />} />
