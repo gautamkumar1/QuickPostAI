@@ -1,5 +1,5 @@
 import React, { JSX } from 'react'
-
+import { Link as ScrollLink } from 'react-scroll';
 interface NavigationItem {
   name: string
   href: string
@@ -13,7 +13,7 @@ const navigation: {
   main: [
     { name: 'Features', href: 'features' },
     { name: 'How it works', href: 'how-it-works' },
-    { name: 'Pricing', href: '#' },
+    { name: 'Faq', href: 'faq' },
     { name: 'About', href: '#' },
   ],
   social: [
@@ -62,12 +62,16 @@ const Footer: React.FC = () => {
         <nav className="flex flex-wrap justify-center">
           {navigation.main.map((item) => (
             <div key={item.name} className="px-5 py-2">
-              <a
-                href={item.href}
+              
+              <ScrollLink
+                to={item.href}
+                
+                                              smooth={true}
+                                              duration={500}
                 className="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-100"
               >
                 {item.name}
-              </a>
+              </ScrollLink>
             </div>
           ))}
         </nav>
