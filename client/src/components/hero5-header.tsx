@@ -28,8 +28,8 @@ export const HeroHeader = () => {
   const { logout } = useAuthStore();
     const mutation = useMutation(({
         mutationFn: logoutUser,
-        onSuccess: (data) => {
-            console.log(`isAuthenticated:  ${isAuthenticated}`);
+        onSuccess: () => {
+            // console.log(`isAuthenticated:  ${isAuthenticated}`);
             logout();
             toast.success("Logged out successfully");
             queryClient.clear();

@@ -41,7 +41,7 @@ export const RegisterButton = () => {
     // Mutation for API call
     const mutation = useMutation({
       mutationFn: registerUser,
-      onSuccess: (data) =>{
+      onSuccess: () =>{
         // console.log(`User created successfully, ${data}`);
         toast.success("Sign up successful");
         setFormData({username: "", email: "", password: ""});

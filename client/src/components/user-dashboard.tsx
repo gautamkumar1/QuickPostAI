@@ -3,10 +3,7 @@ import { AppSidebar } from "./app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -14,7 +11,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { TopBanner } from "./top-banner"
 import { FeatureHighlight } from "./feature-highlight"
 import { RecentActivities } from "./recent-activities"
 import { AutoScheduleSection } from "./auto-schedule-section"

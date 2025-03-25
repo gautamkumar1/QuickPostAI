@@ -3,7 +3,6 @@ import { Button } from '../../components/ui/button'
 import { TextEffect } from '../../components/ui/text-effect'
 import { AnimatedGroup } from '../../components/ui/animated-group'
 import { Link } from "react-router-dom"
-import { HeroVideoDialogDemoTopInBottomOut } from '@/mainComponents/hero-video/HeroVideoDialogDemo'
 import herovideo from "../../../video/quickposthero.mp4"
 const transitionVariants = {
     item: {
