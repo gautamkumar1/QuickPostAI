@@ -18,7 +18,6 @@ import { logoutUser } from "@/Api/api"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { QueryClient } from "@tanstack/react-query";
-import useAuthStore from "@/zustand/authStore"
 export function NavUser({
   user,
 }: {
@@ -31,12 +30,9 @@ export function NavUser({
   const { isMobile } = useSidebar()
   const navigate = useNavigate()
   const queryClient = new QueryClient();
-  const { logout } = useAuthStore();
   const mutation = useMutation(({
     mutationFn: logoutUser,
-    onSuccess: (data) => {
-        console.log(`User logged out successfully, ${data}`);
-        logout();
+    onSuccess: () => {
         toast.success("Logged out successfully");
         queryClient.clear();
     },

@@ -1,4 +1,5 @@
 import { LoginData, RegisterData } from "@/types/type";
+import useAuthStore from "@/zustand/authStore";
 import axios from "axios";
 
 
@@ -31,86 +32,38 @@ export const loginUser = async (data : LoginData): Promise<any> => {
   }
 }
 
-
-
+// ✅ Attach Authorization header dynamically from Zustand
 axiosInstance.interceptors.request.use(
-  async (config) => {
-    const token = axiosInstance.defaults.headers.common['Authorization'];
-    if (!token) {
-      const savedToken = localStorage.getItem("accessToken"); // Load from localStorage
-      if (savedToken) {
-        config.headers['Authorization'] = `Bearer ${savedToken}`;
-      }
+  (config) => {
+    const token = useAuthStore.getState().token;
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// *** Fix: Use a Shared Promise to Prevent Multiple Calls
-// Add interceptor to handle token expiration
-// let refreshTokenPromise: Promise<any> | null = null;
-
-// axiosInstance.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-    
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-
-//       if (!refreshTokenPromise) {
-//         refreshTokenPromise = refreshTokens()
-//           .then((data) => {
-//             refreshTokenPromise = null;
-//             return data;
-//           })
-//           .catch((refreshError) => {
-//             refreshTokenPromise = null;
-//             window.location.href = "/";
-//             return Promise.reject(refreshError);
-//           });
-//       }
-
-//       try {
-//         await refreshTokenPromise;
-//         return axiosInstance(originalRequest); // Retry original request
-//       } catch (refreshError) {
-//         return Promise.reject(refreshError);
-//       }
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
-
-
-// Function to refresh tokens
-
+// ✅ Token Refresh Logic
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-
       try {
-        // Refresh tokens
-        await refreshTokens();
-
-        // Create a new request with updated configuration
-        return axiosInstance({
-          ...originalRequest,
-          headers: {
-            ...originalRequest.headers,
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-          }
-        });
+        const { accessToken } = await refreshTokens();
+        const user = useAuthStore.getState().user;
+        if (user) {
+          useAuthStore.getState().setAuth(user, accessToken);
+        }
+        originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
-        // Logout user or redirect to login if refresh fails
-        localStorage.removeItem("accessToken");
-        window.location.href = "/login";
+        await logoutUser();
+        useAuthStore.getState().logout(); // Logout on refresh failure
+        window.location.href = "/";
         return Promise.reject(refreshError);
       }
     }
@@ -118,92 +71,28 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-// export const refreshTokens = async () => {
-//   try {
-//     const response = await axiosInstance.post('/auth/refreshToken');
-    
-//     // Set the new access token in auth header for future requests
-//     if (response.data.accessToken) {
-//       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
-//       const savedToken = localStorage.getItem("accessToken");
-//       if (savedToken) {
-//         localStorage.removeItem("accessToken");
-//       }
-//       localStorage.setItem("accessToken", response.data.accessToken);
-//     }
-//     return response.data;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
 
-export const refreshTokens = async () => {
+// ✅ Token Refresh API
+const refreshTokens = async () => {
   try {
-    const response = await axiosInstance.post('/auth/refreshToken');
-    
-    if (response.data.accessToken) {
-      // Update token in localStorage
-      localStorage.setItem("accessToken", response.data.accessToken);
-      
-      // Update token in axios default headers
-      axiosInstance.defaults.headers.common['Authorization'] = 
-        `Bearer ${response.data.accessToken}`;
-    }
-    
+    const response = await axiosInstance.post("/auth/refreshToken");
     return response.data;
   } catch (error) {
-    // Clear token on refresh failure
-    localStorage.removeItem("accessToken");
     throw error;
   }
 };
-// export const logoutUser = async () => {
-//   try {
-//     const response = await axiosInstance.post("/auth/logout",{
-//       Headers:{
-//         'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
-//       }
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.log(`Error while logout ${error}`);
-//     throw error;
-    
-//   }
-// }
+
 export const logoutUser = async () => {
   try {
-    const response = await axiosInstance.post("/auth/logout");
-    
-    // Clear local storage and reset headers only on successful logout
-    localStorage.removeItem("accessToken");
-    delete axiosInstance.defaults.headers.common['Authorization'];
-    
-    return response.data;
+    await axiosInstance.post("/auth/logout"); // Call server-side logout API
   } catch (error) {
-    // If logout fails, attempt to refresh token first
-    try {
-      // Try to refresh token before removing access
-      await refreshTokens();
-      
-      // Retry logout after refreshing token
-      const retryResponse = await axiosInstance.post("/auth/logout");
-      
-      // Clear local storage and reset headers on successful retry
-      localStorage.removeItem("accessToken");
-      
-      delete axiosInstance.defaults.headers.common['Authorization'];
-      
-      return retryResponse.data;
-    } catch (refreshError) {
-      // Only remove token if both logout and refresh fail
-      console.error('Logout and token refresh failed', refreshError);
-      
-      // Optional: You might want to handle this differently based on your app's requirements
-      throw refreshError;
-    }
+    console.error("Logout API call failed:", error);
+  } finally {
+    useAuthStore.getState().logout();           // Clear Zustand state
+    localStorage.removeItem("auth-storage");   // Clear session storage// Redirect to login or home
   }
 }
+
 export const fetchUserData = async (userId: number | undefined) => {
   try {
     console.log(`Fetching user data for user id ${userId}`);

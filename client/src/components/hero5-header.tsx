@@ -25,14 +25,14 @@ export const HeroHeader = () => {
     const { isAuthenticated } = useAuthStore();
     const navigate = useNavigate()
     const queryClient = new QueryClient();
-  const { logout } = useAuthStore();
     const mutation = useMutation(({
         mutationFn: logoutUser,
         onSuccess: () => {
             // console.log(`isAuthenticated:  ${isAuthenticated}`);
-            logout();
+            
             toast.success("Logged out successfully");
             queryClient.clear();
+            navigate("/");
         },
         onError: (error: Error) => {
             let errorMessage = "Log out failed";
@@ -49,7 +49,6 @@ export const HeroHeader = () => {
     const handleLogout = (e: React.FormEvent) => {
         e.preventDefault();
         mutation.mutate();
-        navigate("/");
     }
     React.useEffect(() => {
         const handleScroll = () => {

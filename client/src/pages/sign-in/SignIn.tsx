@@ -38,33 +38,7 @@ export default function SignInForm() {
         email:"",
         password:""
     })
-    // const mutation = useMutation({
-    //       mutationFn: loginUser,
-    //       onSuccess: (data) =>{
-    //         // console.log(`User created successfully, ${data}`);
-    //         toast.success("Sign in successful");
-    //         if(data.accessToken){
-    //             useAuthStore.setState({isAuthenticated:true,token:data.accessToken,user:data.user});
-    //             localStorage.setItem("accessToken",data.accessToken);
-    //         }
-    //         setFormdata({email: "", password: ""});
-    //         navigate("/dashboard/convert-blog");
-            
-    //       },
-    //       onError: (error:Error) => {
-    //         useAuthStore.setState({isAuthenticated:false,token:undefined,user:undefined});
-    //         let errorMessage = "Sign in failed";
-        
-    //         const err = error as Error & { response?: { data?: { message?: string } } };
-    //         if (err.response && err.response.data) {
-    //           errorMessage = err.response.data.message || errorMessage;
-    //         }
-            
-    //         console.log(`Error login user: ${errorMessage}`);
-    //         toast.error(errorMessage);
     
-    //       }
-    //     })
     const mutation = useMutation({
         mutationFn: loginUser,
         onSuccess: (data) => {
@@ -72,7 +46,7 @@ export default function SignInForm() {
       
           if (data.accessToken) {
             setAuth(data.user, data.accessToken); // ✅ Update Zustand store
-            localStorage.setItem("accessToken", data.accessToken);
+            
           }
       
           setFormdata({ email: "", password: "" });

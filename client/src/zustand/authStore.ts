@@ -20,15 +20,10 @@ const useAuthStore = create<AuthState>()(
       token: undefined,
 
       // ✅ Function to set authentication
-      setAuth: (user, token) => {
-        set({ isAuthenticated: true, user, token });
-      },
+      setAuth: (user, token) => set({ isAuthenticated: true, user, token }),
 
       // ✅ Function to log out
-      logout: () => {
-        set({ isAuthenticated: false, user: undefined, token: undefined });
-        localStorage.removeItem("accessToken"); // Clear token from localStorage
-      },
+      logout: () => set({ isAuthenticated: false, user: undefined, token: undefined }),
     }),
     {
       name: "auth-storage", // Name for localStorage

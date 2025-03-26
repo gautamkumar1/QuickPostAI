@@ -5,6 +5,7 @@ import LandingPage from "./mainComponents/landing-page/LandingPage";
 import useAuthStore from "./zustand/authStore";
 import { UserDashboard } from "./pages/user-dashboard/UserDashboard";
 import ConvertBlogSkeleton from "./skeletons/ConvertBlogSkeleton";
+import TestPage from "./pages/test-page/TestPage";
 
 // Lazy load components
 const ConvertBlog = lazy(() => import("./pages/convert-blog/ConvertBlog"));
@@ -19,6 +20,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/test" element={isAuthenticated ? <TestPage /> : <UnauthorizedPage />} />
         {/* --> Dashboard Routes --> */}
         <Route
           path="/dashboard/*"
