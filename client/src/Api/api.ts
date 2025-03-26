@@ -78,7 +78,7 @@ axiosInstance.interceptors.response.use(
 // ✅ Token Refresh API
 const refreshTokens = async () => {
   try {
-    const response = await axiosInstance.post("/auth/refreshToken");
+    const response = await axiosInstance.post("/auth/refreshToken",{},{ withCredentials: true });
     return response.data;
   } catch (error) {
     throw error;
