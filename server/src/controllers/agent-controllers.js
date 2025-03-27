@@ -135,6 +135,7 @@ const tweetGenerate = async (req, res) => {
       data:{
         userId: req.user.id,
         postUrl:url,
+        tweets: tweetThread.threads,
       }
     })
     res.status(200).json({
