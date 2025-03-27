@@ -29,8 +29,10 @@
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.3.19",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
     "nodemon": "^3.1.9",
     "prisma": "^6.5.0",
+    "twitter-api-v2": "^1.22.0",
     "winston": "^3.17.0"
   }
 }
