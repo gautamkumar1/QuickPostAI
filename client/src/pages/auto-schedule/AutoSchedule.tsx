@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Calendar } from "@/components/ui/calendar"
@@ -8,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
-import { CalendarIcon, Clock, Send, Twitter } from "lucide-react"
+import { CalendarIcon, Clock, Send, X } from "lucide-react"
 import { TimePickerDemo } from "@/components/time-picker"
 
 function AutoSchedule() {
@@ -16,6 +17,7 @@ function AutoSchedule() {
   const [content, setContent] = useState("")
   const [isScheduled, setIsScheduled] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isConnected, setIsConnected] = useState(false)
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
@@ -26,6 +28,14 @@ function AutoSchedule() {
     setDate(undefined)
     setIsScheduled(false)
     // Here you would normally send the data to your API
+  }
+
+  const handleConnect = async () => {
+    setIsSubmitting(true)
+    // Simulate API call to connect X account
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    setIsConnected(true)
+    setIsSubmitting(false)
   }
 
   const containerVariants = {
@@ -67,8 +77,42 @@ function AutoSchedule() {
                 >
                   Schedule Your Next Tweet
                 </motion.h2>
+                <motion.div variants={itemVariants} className="mt-2 text-sm text-muted-foreground text-center">
+                  {!isConnected && "To schedule tweets, please connect your X account first."}
+                </motion.div>
               </CardHeader>
               <CardContent className="space-y-4">
+                {!isConnected ? (
+                  <motion.div variants={itemVariants} className="flex justify-center">
+                    <Button onClick={handleConnect} className="flex items-center gap-2" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1, ease: "linear" }}
+                        >
+                          <Clock className="h-4 w-4" />
+                        </motion.div>
+                      ) : (
+                        <X className="h-4 w-4" />
+                      )}
+                      Connect X Account
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    variants={itemVariants}
+                    className="flex items-center justify-between bg-muted/30 p-2 rounded-md"
+                  >
+                    <div className="flex items-center gap-2">
+                      <X className="h-4 w-4 text-primary" />
+                      <span className="text-sm">Connected to X</span>
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={() => setIsConnected(false)}>
+                      Disconnect
+                    </Button>
+                  </motion.div>
+                )}
+
                 <motion.div variants={itemVariants}>
                   <Label htmlFor="tweet-content">Tweet Content</Label>
                   <Textarea
@@ -77,6 +121,7 @@ function AutoSchedule() {
                     className="min-h-[120px] mt-2"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
+                    disabled={!isConnected}
                   />
                   <div className="text-right text-sm text-muted-foreground mt-1">{content.length}/280</div>
                 </motion.div>
@@ -125,7 +170,7 @@ function AutoSchedule() {
                     className="w-full"
                     size="lg"
                     onClick={handleSubmit}
-                    disabled={!content || (isScheduled && !date) || isSubmitting}
+                    disabled={!isConnected || !content || (isScheduled && !date) || isSubmitting}
                   >
                     {isSubmitting ? (
                       <motion.div
@@ -161,3 +206,4 @@ function AutoSchedule() {
 }
 
 export default AutoSchedule
+
