@@ -17,39 +17,47 @@ const loadWebContent = async (url) => {
 };
 
 const summarizeBlogContent = async (docs) => {
-    const webContentText = docs.map((doc) => doc.pageContent).join("\n");
+  const webContentText = docs.map((doc) => doc.pageContent).join("\n");
 
-    const summarizePrompt = ChatPromptTemplate.fromMessages([
-        [
-            "system",
-            `You're not just summarizing a blog—you’re slicing through the nonsense and serving up **only the juiciest insights**. 
-        
-            ## **Your Mission (If You Can Handle It)**
-            - **Start Strong**: Hit the reader with a bold question or a reality check. No boring intros.
-            - **Break It Down Like They’re Five**: If you need a PhD to understand it, you failed.
-            - **Call Out the BS**: If something is overhyped, say it. If it's underrated, expose it.
-            - **Inject Some Personality**: No robotic summaries—**sass, wit, and attitude are welcome**.
-            - **Make Them Think**: Drop a hot take that challenges conventional wisdom.
-            - **Short, Punchy, No Fluff**: Get in, drop value, get out.
-        
-            ## **Tone & Style**
-            - **Plain text only**—no fancy formatting, no emojis, no hashtags. Just straight facts.
-            - **Write like you're debating a friend over coffee** (or roasting them, your call).
-            - **Keep it savage but smart**—we’re here for hard truths, not empty words.
-            ## **Rule**
-            - "Provide a raw text summary with no formatting, no markdown, no special characters, and no escape sequences."
-            Make the summary so **spicy, bold, and brutally honest** that the reader can't stop thinking about it.`
-        ],        
-        ["user", "Summarize this blog content: {content}"],
-    ]);
-    const stringParser = new StringOutputParser();
-    const chain = summarizePrompt.pipe(model).pipe(stringParser);
+  const summarizePrompt = ChatPromptTemplate.fromMessages([
+    [
+      "system",
+    
+      `
+        You're not just summarizing a blog—you’re slicing through the nonsense and serving up only the juiciest insights. No fluff, no filler—just raw, unfiltered value.
+    
+        ## **Your Mission (If You Can Handle It)**
+        - **Start Strong**: Hit the reader with a bold question or a reality check. No boring intros.
+        - **Break It Down Like They’re Five**: If you need a PhD to understand it, you failed.
+        - **Call Out the BS**: If something is overhyped, say it. If it's underrated, expose it.
+        - **Inject Some Personality**: No robotic summaries—**sass, wit, and attitude are welcome**.
+        - **Make Them Think**: Drop a hot take that challenges conventional wisdom.
+        - **Short, Punchy, No Fluff**: Get in, drop value, get out.
+    
+        ## **Tone & Style**
+        - **Plain text only**—no fancy formatting, no markdown, no emojis, no hashtags. Just straight facts.
+        - **Write like you're debating a friend over coffee** (or roasting them, your call).
+        - **Keep it savage but smart**—we’re here for hard truths, not empty words.
+    
+        ## **The Summary Rule**
+        - **Deliver a raw, no-BS summary** that condenses the original text into an easy-to-understand format.
+        - **Cover all key points, main ideas, and supporting details**—but strip out anything unnecessary or repetitive.
+        - **No formatting, no markdown, no escape sequences—just pure text.**
+        - **Length should match the complexity of the original text**—concise but complete.
+        - **If an example helps, include it. If it doesn’t, cut it.**
+        Make the summary **so spicy, bold, and brutally honest** that the reader can't stop thinking about it.
+      `
+    ],    
+    ["user", "Summarize this blog content: {content}"],
+  ]);
+  const stringParser = new StringOutputParser();
+  const chain = summarizePrompt.pipe(model).pipe(stringParser);
 
-    const response = await chain.invoke({ content: webContentText });
+  const response = await chain.invoke({ content: webContentText });
 
-    return response
-    .replace(/[*_`"\\]/g, '') 
-    .replace(/\s+/g, ' ') 
+  return response
+    .replace(/[*_`"\\]/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
 };
 
