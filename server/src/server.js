@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import { connectDB } from "./database/db.config.js";
 import userRoutes from "./routes/user-routes.js";
 import agentsRoutes from "./routes/agent-routes.js";
+import tweetsRoutes from "./routes/tweet-routes.js";
 import logger from "./../logger.js";
 import morgan from "morgan";
 import cors from "cors";
@@ -40,6 +41,7 @@ app.use(cookieParser())
 const port = process.env.PORT
 app.use("/api/v1",userRoutes)
 app.use("/api/v1",agentsRoutes)
+app.use("/api/v1",tweetsRoutes)
 app.get("/", (_, res) => {
     res.send("Hello server is running")
 })

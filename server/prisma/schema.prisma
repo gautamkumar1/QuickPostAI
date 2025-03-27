@@ -32,3 +32,12 @@ model Posts {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Tweets {
+  id           String   @id @default(uuid())  
+  content      String?   
+  scheduleTime DateTime? 
+  status       String?   @default("pending")   // Status: pending, posted, failed
+  userId       Int?      
+  createdAt    DateTime @default(now())
+}
