@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { m, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { CalendarIcon, Send, X } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import { TimePickerDemo } from "@/components/time-picker";
 import { useMutation } from "@tanstack/react-query";
 import { connectTwitter, scheduleTweet } from "@/Api/api";

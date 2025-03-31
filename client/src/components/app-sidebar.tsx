@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import {BookOpen, Calendar, PenSquare } from "lucide-react"
+import {BookOpen, Calendar, PenSquare, View } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -42,6 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     // { title: "Home", url: "/dashboard", icon: Home, isActive: pathname === "/dashboard" },
     { title: "Convert Blog", url: "/dashboard/convert-blog", icon: BookOpen, isActive: pathname === "/dashboard/convert-blog" },
     { title: "Auto Schedule Post", url: "/dashboard/auto-schedule", icon: Calendar, isActive: pathname === "/dashboard/auto-schedule" },
+    { title: "View Scheduled Post", url: "/dashboard/view-scheduled-tweets", icon: View , isActive: pathname === "/dashboard/view-scheduled-tweets" },
     { title: "Create Post", url: "/dashboard/create-post", icon: PenSquare, isActive: pathname === "/dashboard/create-post" },
   ];
 

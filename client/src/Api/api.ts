@@ -1,7 +1,7 @@
 import { LoginData, RegisterData } from "@/types/type";
 import useAuthStore from "@/zustand/authStore";
 import axios from "axios";
-import { log } from "console";
+
 
 
 // const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -151,3 +151,14 @@ export const scheduleTweet = async (data: any) => {
     throw error;
   }
 };
+
+export const getScheduledTweets = async () => {
+  try {
+    const response = await axiosInstance.get('/getScheduledTweets');
+    return response.data;
+  } catch (error) {
+    console.log(`Error while fetching scheduled tweets ${error}`);
+    throw error;
+    
+  }
+}

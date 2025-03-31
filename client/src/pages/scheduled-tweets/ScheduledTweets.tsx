@@ -1,77 +1,74 @@
-import { useState } from "react"
-import { format } from "date-fns"
-import { Calendar, Clock, Filter, Search, SortAsc, SortDesc } from "lucide-react"
+import {  useState } from "react";
+import { format } from "date-fns";
+import { Calendar, Clock, Filter, Search, SortAsc, SortDesc } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useQuery } from "@tanstack/react-query";
+import { getScheduledTweets } from "@/Api/api";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-
+// ✅ Define the Tweet interface
 interface Tweet {
-  id: string
-  content: string
-  scheduleTime: string
-  status: string
-  createdAt: string
+  id: string;
+  content: string;
+  scheduleTime: string;
+  status: string;
+  createdAt: string;
 }
 
-export default function ScheduledTweetsPage() {
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
-  const [searchQuery, setSearchQuery] = useState("")
+function ScheduledTweetsPage() {
+  const { data, isLoading, isError, refetch } = useQuery<Tweet[]>({
+    queryKey: ["scheduledTweets"],
+    queryFn: getScheduledTweets,
+  });
 
-  // Sample data
-  const tweets: Tweet[] = [
-    {
-      id: "2f0eb639-4685-4584-9ab4-a6170d3d271e",
-      content: "This tweet posts444",
-      scheduleTime: "2025-03-28T00:04:00.000Z",
-      status: "posted",
-      createdAt: "2025-03-27T18:34:11.251Z",
-    },
-    {
-      id: "42e03e71-0010-4bac-aaf3-a8c04809c754",
-      content: "This tweet posts88888",
-      scheduleTime: "2025-03-28T00:07:00.000Z",
-      status: "posted",
-      createdAt: "2025-03-27T18:37:07.167Z",
-    },
-    {
-      id: "ec27b2fa-0fab-4a9d-8487-8863ec40f337",
-      content: "This tweet posts88888",
-      scheduleTime: "2025-03-28T00:10:00.000Z",
-      status: "posted",
-      createdAt: "2025-03-27T18:37:23.603Z",
-    },
-    {
-      id: "48830975-c20c-481d-ba64-233d7e024c2e",
-      content: "This tweet posts88888",
-      scheduleTime: "2025-03-31T16:51:00.000Z",
-      status: "posted",
-      createdAt: "2025-03-31T11:19:26.642Z",
-    },
-    {
-      id: "870c2bd8-ca0f-46c9-8889-86581840d2d2",
-      content: "jjj",
-      scheduleTime: "2025-03-31T18:02:00.000Z",
-      status: "posted",
-      createdAt: "2025-03-31T12:30:25.461Z",
-    },
-  ]
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [searchQuery, setSearchQuery] = useState("");
+  const sortedTweets = [...(data ?? [])].sort((a, b) => {
+    const dateA = new Date(a.scheduleTime).getTime();
+    const dateB = new Date(b.scheduleTime).getTime();
+    return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+  });
 
-  // Sort tweets by scheduleTime
-  const sortedTweets = [...tweets].sort((a, b) => {
-    const dateA = new Date(a.scheduleTime).getTime()
-    const dateB = new Date(b.scheduleTime).getTime()
-    return sortDirection === "asc" ? dateA - dateB : dateB - dateA
-  })
-
-  // Filter tweets by content
-  const filteredTweets = sortedTweets.filter((tweet) => tweet.content.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredTweets = sortedTweets.filter((tweet) =>
+    tweet.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const toggleSortDirection = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-4 text-center">
+        <div className="animate-pulse flex flex-col items-center space-y-2">
+          <div className="h-6 bg-slate-200 rounded w-1/2"></div>
+          <div className="h-24 bg-slate-200 rounded w-full"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="p-4 text-center text-red-500">
+        <p>Failed to load scheduled tweets</p>
+        <Button variant="outline" onClick={() => refetch()} className="mt-2">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="p-8 text-center text-muted-foreground">
+        <p>No scheduled tweets found</p>
+      </div>
+    );
   }
 
   return (
@@ -170,14 +167,9 @@ export default function ScheduledTweetsPage() {
             </Card>
           ))}
         </div>
-
-        {filteredTweets.length === 0 && (
-          <div className="text-center py-10">
-            <p className="text-muted-foreground">No tweets found</p>
-          </div>
-        )}
       </div>
     </div>
-  )
+  );
 }
 
+export default ScheduledTweetsPage;
