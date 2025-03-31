@@ -136,4 +136,17 @@ const autoScheduleTweets = async (req, res) => {
   }
 };
 
-export { autoScheduleTweets };
+const getScheduledTweets = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const scheduledTweets = await prisma.tweets.findMany({
+      where: { userId },select:{id:true,content:true,scheduleTime:true,status:true,createdAt:true},
+      orderBy: { scheduleTime: "asc" },
+    });
+    return res.status(200).json(scheduledTweets);
+  } catch (error) {
+    logger.error("Error fetching scheduled tweets:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+export { autoScheduleTweets,getScheduledTweets};
