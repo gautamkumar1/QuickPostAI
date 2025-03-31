@@ -7,5 +7,6 @@ router.post("/autoSchedule",isAuthenticated,autoScheduleTweets)
 export default router;
 
 // Twitter OAuth
-router.get("/connect", isAuthenticated, twitterAuth);
-router.get("/callback", isAuthenticated, twitterCallback);
+router.get("/auth/connect", isAuthenticated, twitterAuth);
+// router.get("/auth/callback", isAuthenticated, twitterCallback);
+router.get("/auth/twitter/callback", twitterCallback);

@@ -1,6 +1,7 @@
 import { LoginData, RegisterData } from "@/types/type";
 import useAuthStore from "@/zustand/authStore";
 import axios from "axios";
+import { log } from "console";
 
 
 // const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -124,5 +125,15 @@ export const tweetGenerate = async (url:string) =>{
     console.log(`Error while generating tweet ${error}`);
     throw error;
     
+  }
+}
+
+export const connectTwitter = async () =>{
+  try {
+    const response = await axiosInstance.get('/auth/connect');
+    return response.data;
+  } catch (error) {
+    console.log(`Error while connecting to Twitter ${error}`);
+    throw error;
   }
 }

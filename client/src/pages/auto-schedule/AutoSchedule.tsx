@@ -11,6 +11,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns"
 import { CalendarIcon, Clock, Send, X } from "lucide-react"
 import { TimePickerDemo } from "@/components/time-picker"
+import { useMutation } from "@tanstack/react-query"
+import { connectTwitter } from "@/Api/api"
 
 function AutoSchedule() {
   const [date, setDate] = useState<Date | undefined>(undefined)
@@ -18,7 +20,15 @@ function AutoSchedule() {
   const [isScheduled, setIsScheduled] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
-
+  const mutation = useMutation({
+    mutationFn: connectTwitter,
+    onSuccess: (data) => {
+      window.location.href = data.url
+    },
+    onError: (error) => {
+      console.error("Error connecting to Twitter:", error)
+    },
+  })
   const handleSubmit = async () => {
     setIsSubmitting(true)
     // Simulate API call
@@ -30,12 +40,10 @@ function AutoSchedule() {
     // Here you would normally send the data to your API
   }
 
-  const handleConnect = async () => {
-    setIsSubmitting(true)
-    // Simulate API call to connect X account
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+  const handleConnect = async (e: React.FormEvent) => {
+    e.preventDefault()
+    mutation.mutate()
     setIsConnected(true)
-    setIsSubmitting(false)
   }
 
   const containerVariants = {
@@ -95,7 +103,7 @@ function AutoSchedule() {
                       ) : (
                         <X className="h-4 w-4" />
                       )}
-                      Connect X Account
+                      {mutation.isPending ? "Connecting..." : "Connect to X"}
                     </Button>
                   </motion.div>
                 ) : (
