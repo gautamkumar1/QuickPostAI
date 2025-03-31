@@ -61,7 +61,8 @@ const loginUser = async (req, res) => {
                 id: true,
                 username: true,
                 email: true,
-                avatarUrl: true
+                avatarUrl: true,
+                isTwitterLoggedIn: true,
             }
         });
         setCookies(res, accessToken, refreshToken);

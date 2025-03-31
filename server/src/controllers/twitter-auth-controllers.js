@@ -97,6 +97,7 @@ const twitterAuth = async (req, res) => {
         data: {
           xAccessToken: accessToken,
           xRefreshToken: refreshToken,
+          isTwitterLoggedIn: true,
         },
       });
       
@@ -110,7 +111,7 @@ const twitterAuth = async (req, res) => {
     //     twitterUser,
     //     updatedUser,
     //   });
-    return res.redirect(`${process.env.FRONTEND_URL}/dashboard/auto-schedule`);
+    return res.redirect(`${process.env.FRONTEND_URL}/dashboard/auto-schedule?success=true`);
 
     } catch (error) {
       console.error("Twitter Callback Error:", error);

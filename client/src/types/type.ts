@@ -13,4 +13,5 @@ export type UserData = {
     username: string;
     email: string;
     avatarUrl: string
+    isTwitterLoggedIn: boolean
 }
