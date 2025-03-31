@@ -186,9 +186,9 @@ function AutoSchedule() {
                 className="w-full"
                 size="lg"
                 onClick={handleSubmit}
-                disabled={!isTwitterLoggedIn || !content || (isScheduled && (!date || !time)) || isSubmitting}
+                disabled={!isTwitterLoggedIn}
               >
-                {isSubmitting ? "Submitting..." : isScheduled ? "Schedule Tweet" : "Tweet Now"}
+                {isSubmitting ? "Scheduling..." : "Schedule Tweet"}
               </Button>
             </CardFooter>
           </Card>
