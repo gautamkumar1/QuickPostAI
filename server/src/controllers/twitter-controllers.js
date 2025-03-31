@@ -94,6 +94,7 @@ const pastImmediateTweet = async (content, scheduleTime, userId) => {
 const autoScheduleTweets = async (req, res) => {
   try {
     const { content, scheduleTime } = req.body;
+    logger.info("Received request to auto-schedule tweet:", JSON.stringify(req.body));
     if (!content || !scheduleTime) {
       return res.status(400).json({ message: "Content and schedule time required" });
     }

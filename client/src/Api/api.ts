@@ -137,3 +137,17 @@ export const connectTwitter = async () =>{
     throw error;
   }
 }
+
+export const scheduleTweet = async (data: any) => {
+  console.log("Scheduling tweet with data:", data);
+  if (!data) {
+    throw new Error("No data provided for scheduling tweet.");
+  }
+  try {
+    const response = await axiosInstance.post('/autoSchedule', data);
+    return response.data;
+  } catch (error) {
+    console.log(`Error while scheduling tweet ${error}`);
+    throw error;
+  }
+};

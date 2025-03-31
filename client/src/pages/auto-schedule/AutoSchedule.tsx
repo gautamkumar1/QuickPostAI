@@ -8,16 +8,18 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { CalendarIcon, Clock, Send, X } from "lucide-react";
+import { CalendarIcon, Send, X } from "lucide-react";
 import { TimePickerDemo } from "@/components/time-picker";
 import { useMutation } from "@tanstack/react-query";
-import { connectTwitter } from "@/Api/api";
+import { connectTwitter, scheduleTweet } from "@/Api/api";
 import useAuthStore from "@/zustand/authStore";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 function AutoSchedule() {
   const { isTwitterLoggedIn, setTwitterLoggedIn } = useAuthStore();
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [time, setTime] = useState<string | undefined>(undefined); // Added time state
   const [content, setContent] = useState("");
   const [isScheduled, setIsScheduled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,20 +36,68 @@ function AutoSchedule() {
     },
   });
 
+  const mutationSchedule = useMutation({
+    mutationFn: scheduleTweet,
+    onSuccess: (data) => {
+      console.log("Tweet scheduled successfully:", data);
+      toast.success(data.message);
+    },
+    onError: (error) => {
+      console.error("Error scheduling tweet:", error);
+      toast.error(error.message);
+    },
+  });
+
   useEffect(() => {
     if (success === "true") {
       setTwitterLoggedIn(true);
     }
   }, [success, setTwitterLoggedIn]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsSubmitting(true);
+  
+    if (isScheduled && (!date || !time)) {
+      toast.error("Please select a date and time.");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+  
+    // Convert 12-hour format to 24-hour format
+    if (!time) {
+      toast.error("Time is not defined.");
+      setIsSubmitting(false);
+      return;
+    }
+    const [rawHours, rawMinutes, period] = time.split(/[:\s]/);
+    let hours = parseInt(rawHours, 10);
+    const minutes = rawMinutes.padStart(2, "0");
+  
+    if (period === "PM" && hours !== 12) {
+      hours += 12;
+    } else if (period === "AM" && hours === 12) {
+      hours = 0;
+    }
+  
+    const scheduleTime = isScheduled
+      ? `${formattedDate} ${String(hours).padStart(2, "0")}:${minutes}:00`
+      : undefined;
+  
+    console.log("Final scheduleTime:", scheduleTime); // Debugging
+  
+    mutationSchedule.mutate({
+      content,
+      scheduleTime,
+    });
+  
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsSubmitting(false);
     setContent("");
-    setDate(undefined);
-    setIsScheduled(false);
   };
+  
 
   const handleConnect = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +110,9 @@ function AutoSchedule() {
         <motion.div className="space-y-6">
           <Card>
             <CardHeader>
-              <motion.h2 className="text-2xl font-semibold text-center">Schedule Your Next Tweet</motion.h2>
+              <motion.h2 className="text-2xl font-semibold text-center">
+                Schedule Your Next Tweet
+              </motion.h2>
               <motion.div className="mt-2 text-sm text-muted-foreground text-center">
                 {!isTwitterLoggedIn && "To schedule tweets, please connect your X account first."}
               </motion.div>
@@ -122,7 +174,7 @@ function AutoSchedule() {
                     <div>
                       <Label>Time</Label>
                       <div className="mt-2">
-                        <TimePickerDemo />
+                        <TimePickerDemo setTime={setTime} /> {/* Pass setTime to capture the selected time */}
                       </div>
                     </div>
                   </div>
@@ -130,19 +182,15 @@ function AutoSchedule() {
               )}
             </CardContent>
             <CardFooter>
-              <Button className="w-full" size="lg" onClick={handleSubmit} disabled={!isTwitterLoggedIn || !content || (isScheduled && !date) || isSubmitting}>
+              <Button
+                className="w-full"
+                size="lg"
+                onClick={handleSubmit}
+                disabled={!isTwitterLoggedIn || !content || (isScheduled && (!date || !time)) || isSubmitting}
+              >
                 {isSubmitting ? "Submitting..." : isScheduled ? "Schedule Tweet" : "Tweet Now"}
               </Button>
             </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <h3 className="text-lg font-medium">Upcoming Tweets</h3>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-center py-8">No scheduled tweets yet. Create one above!</p>
-            </CardContent>
           </Card>
         </motion.div>
       </div>
