@@ -11,9 +11,12 @@ import { prisma } from "../database/db.config.js";
 //   accessSecret: process.env.TWITTER_ACCESS_SECRET || "",
 // });
 
-const futureScheduleTweet = async (content, scheduleTime, userId) => {
+const futureScheduleTweet = async (content, scheduleTime, user) => {
   try {
     // Convert `scheduleTime` to a Date object (UTC format)
+    const { xAccessToken, xRefreshToken } = user;
+    const userClient = new TwitterApi(user.xAccessToken);
+    const userId = user.id;
     const tweetTime = new Date(scheduleTime.replace(" ", "T") + "Z");
 
     // Store tweet in the database as "pending"
@@ -43,7 +46,7 @@ const futureScheduleTweet = async (content, scheduleTime, userId) => {
 
       try {
         // Post the tweet
-        const response = await twitterClient.v2.tweet(content);
+        const response = await userClient.v2.tweet(content);
         // Update tweet status in the database
         await prisma.tweets.update({
           where: { id: scheduledTweet.id },
@@ -66,7 +69,6 @@ const futureScheduleTweet = async (content, scheduleTime, userId) => {
     logger.error("Error scheduling tweet for future:", error);
   }
 };
-
 
 const pastImmediateTweet = async (content, scheduleTime, userId) => {
   try {
@@ -92,13 +94,16 @@ const pastImmediateTweet = async (content, scheduleTime, userId) => {
 const autoScheduleTweets = async (req, res) => {
   try {
     const { content, scheduleTime } = req.body;
-    console.log(`Content: ${content}, Schedule Time: ${scheduleTime}`);
-    
-    const userId = req.user.id;
-
     if (!content || !scheduleTime) {
       return res.status(400).json({ message: "Content and schedule time required" });
     }
+    console.log(`Content: ${content}, Schedule Time: ${scheduleTime}`);
+    const userId = req.user.id; 
+    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    if (!user || !user.xAccessToken) {
+      return res.status(400).json({ message: "Twitter not connected" });
+    }
+    
 
     // Convert scheduleTime to Date object (Local Time)
     const tweetTime = new Date(scheduleTime.replace(" ", "T")); 
@@ -117,13 +122,11 @@ const autoScheduleTweets = async (req, res) => {
 
     // If schedule time is past/present, post immediately
     if (tweetTimeUTC <= currentTimeUTC) {
-      logger.info("Posting tweet immediately as schedule time is in the past or present");
-      await pastImmediateTweet(content, scheduleTime, userId);
-      return res.status(200).json({ message: "Tweet posted immediately", content });
+      return res.status(200).json({ message: "Must be scheduled for future" });
     }
 
     // Schedule for future
-    await futureScheduleTweet(content, scheduleTime, userId);
+    await futureScheduleTweet(content, scheduleTime,user);
     return res.status(200).json({ message: "Tweet scheduled successfully", scheduleTime });
 
   } catch (error) {
