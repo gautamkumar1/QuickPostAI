@@ -20,6 +20,8 @@ model User {
   password  String
   avatarUrl String?
   refreshToken String?
+  xAccessToken String?
+  xRefreshToken String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

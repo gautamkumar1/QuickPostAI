@@ -4,12 +4,12 @@ import logger from "../../logger.js";
 import { prisma } from "../database/db.config.js";
 
 // Twitter API Client
-const twitterClient = new TwitterApi({
-  appKey: process.env.TWITTER_API_KEY,
-  appSecret: process.env.TWITTER_API_SECRET,
-  accessToken: process.env.TWITTER_ACCESS_TOKEN,
-  accessSecret: process.env.TWITTER_ACCESS_SECRET,
-});
+// const twitterClient = new TwitterApi({
+//   appKey: process.env.TWITTER_API_KEY || "",
+//   appSecret: process.env.TWITTER_API_SECRET || "",
+//   accessToken: process.env.TWITTER_ACCESS_TOKEN || "",
+//   accessSecret: process.env.TWITTER_ACCESS_SECRET || "",
+// });
 
 const futureScheduleTweet = async (content, scheduleTime, userId) => {
   try {
