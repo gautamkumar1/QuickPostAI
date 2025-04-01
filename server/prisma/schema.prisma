@@ -25,7 +25,6 @@ model User {
   isTwitterLoggedIn Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  AuthSession AuthSession[]
 }
 
 model Posts {
@@ -44,13 +43,4 @@ model Tweets {
   status       String?   @default("pending")   // Status: pending, posted, failed
   userId       Int?      
   createdAt    DateTime @default(now())
-}
-
-model AuthSession {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @unique
-  state       String   @unique
-  codeVerifier String
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
