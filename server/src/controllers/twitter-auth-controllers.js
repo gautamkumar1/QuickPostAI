@@ -14,9 +14,6 @@ const twitterAuth = async (req, res) => {
         { scope: ["tweet.read", "tweet.write", "users.read", "offline.access"] }
       );
       
-      // Log for debugging
-      console.log("Authorization URL generated:", url);
-      
       // Store the code verifier and state in cookies
       res.cookie("codeVerifier", codeVerifier, {
         httpOnly: true,
@@ -56,13 +53,13 @@ const twitterAuth = async (req, res) => {
         // const userId = req.cookies.userId;
       
       // Log received values for debugging
-      console.log("Received in callback:");
-      console.log("- State:", state);
-      console.log("- Stored State:", storedState);
-      console.log("- Code:", code);
-      console.log("- Code Verifier exists:", !!codeVerifier);
-      console.log("- User ID:", userId);
-      console.log("- Redirect URI:", process.env.TWITTER_REDIRECT_URI);
+      // console.log("Received in callback:");
+      // console.log("- State:", state);
+      // console.log("- Stored State:", storedState);
+      // console.log("- Code:", code);
+      // console.log("- Code Verifier exists:", !!codeVerifier);
+      // console.log("- User ID:", userId);
+      // console.log("- Redirect URI:", process.env.TWITTER_REDIRECT_URI);
       
       if (!state || !code || state !== storedState) {
         return res.status(400).json({ error: "Invalid OAuth state" });
