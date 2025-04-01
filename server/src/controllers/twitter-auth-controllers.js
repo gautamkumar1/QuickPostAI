@@ -153,7 +153,7 @@ const twitterAuth = async (req, res) => {
       res.clearCookie("codeVerifier");
       res.clearCookie("userId");
   
-      res.json({ message: "Successfully logged out" });
+      res.json({ message: "X Loggedd out successfully" });
     } catch (error) {
       logger.error("Error during Twitter logout:", error);
       res.status(500).json({ message: "Failed to log out" });

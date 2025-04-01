@@ -11,7 +11,7 @@ import { format } from "date-fns";
 import { CalendarIcon, X } from "lucide-react";
 import { TimePickerDemo } from "@/components/time-picker";
 import { useMutation } from "@tanstack/react-query";
-import { connectTwitter, scheduleTweet } from "@/Api/api";
+import { connectTwitter, scheduleTweet, xLogout } from "@/Api/api";
 import useAuthStore from "@/zustand/authStore";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -47,7 +47,17 @@ function AutoSchedule() {
       toast.error(error.message);
     },
   });
-
+  const mutationXLogout = useMutation({
+    mutationFn: xLogout,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      setTwitterLoggedIn(false);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+      console.error("Error logging out:", error);
+    }
+  })
   useEffect(() => {
     if (success === "true") {
       setTwitterLoggedIn(true);
@@ -103,7 +113,10 @@ function AutoSchedule() {
     e.preventDefault();
     mutation.mutate();
   };
-
+  const handleDisconnect = async (e: React.FormEvent) => {
+    e.preventDefault();
+    mutationXLogout.mutate();
+  }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-3xl">
@@ -130,7 +143,7 @@ function AutoSchedule() {
                     <X className="h-4 w-4 text-primary" />
                     <span className="text-sm">Connected to X</span>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => setTwitterLoggedIn(false)}>
+                  <Button variant="ghost" size="sm" onClick={handleDisconnect}>
                     Disconnect
                   </Button>
                 </div>

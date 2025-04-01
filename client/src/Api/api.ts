@@ -162,3 +162,14 @@ export const getScheduledTweets = async () => {
     
   }
 }
+
+export const xLogout = async () => {
+  try {
+    const response = await axiosInstance.get('/auth/xlogout');
+    return response.data;
+  } catch (error) {
+    console.log(`Error while logging out from Twitter ${error}`);
+    throw error;
+    
+  }
+}
