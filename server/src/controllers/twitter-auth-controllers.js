@@ -42,11 +42,29 @@ const twitterAuth = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000  
       });
       // ✅ Store in DB as a fallback
-      await prisma.authSession.upsert({
+      let session = await prisma.authSession.findUnique({
         where: { userId },
-        update: { state, codeVerifier },
-        create: { userId, state, codeVerifier }
-    });
+      });
+      
+      if (!session) {
+        // Session doesn't exist, create it
+        session = await prisma.authSession.create({
+          data: {
+            userId,
+            state,
+            codeVerifier,
+          },
+        });
+      } else {
+        // Session exists, update it if needed
+        session = await prisma.authSession.update({
+          where: { userId },
+          data: {
+            state,
+            codeVerifier,
+          },
+        });
+      }
 
       res.json({ url });
     } catch (error) {
