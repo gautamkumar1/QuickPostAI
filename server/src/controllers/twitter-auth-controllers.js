@@ -6,7 +6,7 @@ import logger from "../../logger.js";
 
 const COOKIE_SECURE = process.env.NODE_ENV === 'production'
 const COOKIE_HTTPONLY = true
-const COOKIE_SAMESITE = process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+const COOKIE_SAMESITE = process.env.NODE_ENV === 'production' ? 'none' : 'lax'
 const twitterAuth = async (req, res) => {
     try {
       // Make sure to include userId in session or cookie
