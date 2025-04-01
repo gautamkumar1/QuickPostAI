@@ -10,8 +10,7 @@ const COOKIE_SAMESITE = process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
 const twitterAuth = async (req, res) => {
     try {
       // Make sure to include userId in session or cookie
-      console.log("Prisma object:", prisma);
-console.log("Prisma authSession:", prisma?.authSession);
+      
       const userId = req.user.id;
       console.log("User ID from session:", userId);
       
@@ -43,30 +42,6 @@ console.log("Prisma authSession:", prisma?.authSession);
         sameSite: COOKIE_SAMESITE,
         maxAge: 7 * 24 * 60 * 60 * 1000  
       });
-      // ✅ Store in DB as a fallback
-      let session = await prisma.authSession.findUnique({
-        where: { userId: userId },
-      });
-      
-      if (!session) {
-        // Session doesn't exist, create it
-        session = await prisma.authSession.create({
-          data: {
-            userId:userId,
-            state:state,
-            codeVerifier:codeVerifier,
-          },
-        });
-      } else {
-        // Session exists, update it if needed
-        session = await prisma.authSession.update({
-          where: { userId:userId },
-          data: {
-            state:state,
-            codeVerifier:codeVerifier,
-          },
-        });
-      }
 
       res.json({ url });
     } catch (error) {
@@ -93,18 +68,7 @@ console.log("Prisma authSession:", prisma?.authSession);
       console.log("- Code Verifier exists:", !!codeVerifier);
       console.log("- User ID:", userId);
       console.log("- Redirect URI:", process.env.TWITTER_REDIRECT_URI);
-       // ✅ Fallback: Retrieve from DB if cookies are missing
-       if (!storedState || !codeVerifier || isNaN(userId)) {
-        const session = await prisma.authSession.findUnique({ where: { state } });
-
-        if (!session) {
-            return res.status(400).json({ error: "Invalid OAuth state" });
-        }
-
-        storedState = session.state;
-        codeVerifier = session.codeVerifier;
-        userId = session.userId;
-    }
+      console.log("- Cookies:", req.cookies);
 
       if (!state || !code || state !== storedState) {
         return res.status(400).json({ error: "Invalid OAuth state" });
@@ -143,8 +107,6 @@ console.log("Prisma authSession:", prisma?.authSession);
           isTwitterLoggedIn: true,
         },
       });
-      // ✅ Clean up session from DB
-        await prisma.authSession.deleteMany({ where: { userId } });
       // Clear cookies
       res.clearCookie("state");
       res.clearCookie("codeVerifier");
