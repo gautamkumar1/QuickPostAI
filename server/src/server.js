@@ -45,6 +45,28 @@ app.use("/api/v1",tweetsRoutes)
 app.get("/", (_, res) => {
     res.send("Hello server is running")
 })
+app.get("/health", (_, res) => {
+  res.status(200).send("OK");
+});
+const keepAlive = () => {
+  const url = 'https://quickpostai-4zls.onrender.com/health';  
+  
+  setInterval(async () => {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        console.log('Keep-alive ping sent, status: 200');
+      } else {
+        console.error(`Ping failed with status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Keep-alive ping failed:', error);
+    }
+  }, 720000); // Adjusted to 12 minutes for better reliability
+}
+
+keepAlive();
+
 connectDB().then(() => {
     app.listen(port, () => {
         logger.info(`Server running on http://localhost:${port}`)
