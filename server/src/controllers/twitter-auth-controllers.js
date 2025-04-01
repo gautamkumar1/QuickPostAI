@@ -1,5 +1,6 @@
 import { twitterClient } from "../utils/utils.js";
 import { prisma } from "../database/db.config.js";
+import logger from "../../logger.js";
 
 // In twitterAuth function
 const twitterAuth = async (req, res) => {
@@ -128,4 +129,33 @@ const twitterAuth = async (req, res) => {
       });
     }
   };
-export {twitterAuth, twitterCallback};
+  const twitterLogout = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // Clear Twitter tokens from the database
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          xAccessToken: null,
+          xRefreshToken: null,
+          isTwitterLoggedIn: false,
+        },
+      });
+  
+      res.clearCookie("state");
+      res.clearCookie("codeVerifier");
+      res.clearCookie("userId");
+  
+      res.json({ message: "Successfully logged out" });
+    } catch (error) {
+      logger.error("Error during Twitter logout:", error);
+      res.status(500).json({ message: "Failed to log out" });
+    }
+  }
+export {twitterAuth, twitterCallback, twitterLogout};
