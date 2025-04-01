@@ -3,6 +3,10 @@ import { prisma } from "../database/db.config.js";
 import logger from "../../logger.js";
 
 // In twitterAuth function
+
+const COOKIE_SECURE = process.env.NODE_ENV === 'production'
+const COOKIE_HTTPONLY = true
+const COOKIE_SAMESITE = process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
 const twitterAuth = async (req, res) => {
     try {
       // Make sure to include userId in session or cookie
@@ -16,24 +20,24 @@ const twitterAuth = async (req, res) => {
       
       // Store the code verifier and state in cookies
       res.cookie("codeVerifier", codeVerifier, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 5 // 5 minutes - short expiration
+        httpOnly: COOKIE_HTTPONLY,
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAMESITE,
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 minutes - short expiration
       });
       
       res.cookie("state", state, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 5 // 5 minutes
+        httpOnly: COOKIE_HTTPONLY,
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAMESITE,
+        maxAge: 7 * 24 * 60 * 60 * 1000 
       });
       
       res.cookie("userId", userId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 5 // 5 minutes
+        httpOnly: COOKIE_HTTPONLY,
+        secure: COOKIE_SECURE,
+        sameSite: COOKIE_SAMESITE,
+        maxAge: 7 * 24 * 60 * 60 * 1000  
       });
       
       res.json({ url });
