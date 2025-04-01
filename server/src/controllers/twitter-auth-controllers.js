@@ -43,25 +43,25 @@ const twitterAuth = async (req, res) => {
       });
       // ✅ Store in DB as a fallback
       let session = await prisma.authSession.findUnique({
-        where: { userId },
+        where: { userId: userId },
       });
       
       if (!session) {
         // Session doesn't exist, create it
         session = await prisma.authSession.create({
           data: {
-            userId,
-            state,
-            codeVerifier,
+            userId:userId,
+            state:state,
+            codeVerifier:codeVerifier,
           },
         });
       } else {
         // Session exists, update it if needed
         session = await prisma.authSession.update({
-          where: { userId },
+          where: { userId:userId },
           data: {
-            state,
-            codeVerifier,
+            state:state,
+            codeVerifier:codeVerifier,
           },
         });
       }
