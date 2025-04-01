@@ -10,6 +10,8 @@ const COOKIE_SAMESITE = process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
 const twitterAuth = async (req, res) => {
     try {
       // Make sure to include userId in session or cookie
+      console.log("Prisma object:", prisma);
+console.log("Prisma authSession:", prisma?.authSession);
       const userId = req.user.id;
       console.log("User ID from session:", userId);
       
