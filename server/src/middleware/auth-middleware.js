@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken"
 import { prisma } from "../database/db.config.js";
+import logger from "../../logger.js";
 
 const isAuthenticated = async (req, res, next) => {
     try {
         const token = req.cookies.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+        logger.info("Token from cookies or header:", token);
         if (!token) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }

@@ -49,7 +49,7 @@ app.get("/health", (_, res) => {
   res.status(200).send("OK");
 });
 const keepAlive = () => {
-  const url = 'https://quickpostai-4zls.onrender.com/health';  
+  const url = 'https://quickpostai-1.onrender.com/health';  
   
   setInterval(async () => {
     try {

@@ -96,7 +96,8 @@ const refreshAccessToken = async (req, res) => {
     try {
         // Retrieve refresh token from cookies or Authorization header
         const incomingRefreshToken = req.cookies.refreshToken || req.header("Authorization")?.replace("Bearer ", "");
-
+        console.log(`Incoming refresh token: ${incomingRefreshToken}`);
+        
         if (!incomingRefreshToken) {
             return res.status(401).json({ message: "Refresh token not found" });
         }
