@@ -11,6 +11,8 @@ const twitterAuth = async (req, res) => {
     try {
       // Make sure to include userId in session or cookie
       const userId = req.user.id;
+      console.log("User ID from session:", userId);
+      
       
       // Generate OAuth URL with specific scopes
       const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
@@ -58,6 +60,7 @@ const twitterAuth = async (req, res) => {
       
       // Log received values for debugging
       console.log("Received in callback:");
+      console.log("Cookie value:", req.cookies.userId);
       console.log("- State:", state);
       console.log("- Stored State:", storedState);
       console.log("- Code:", code);
