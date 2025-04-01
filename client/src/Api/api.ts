@@ -1,7 +1,7 @@
 import { LoginData, RegisterData } from "@/types/type";
 import useAuthStore from "@/zustand/authStore";
 import axios from "axios";
-
+ 
 
 
 // const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
