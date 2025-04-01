@@ -41,7 +41,13 @@ const twitterAuth = async (req, res) => {
         sameSite: COOKIE_SAMESITE,
         maxAge: 7 * 24 * 60 * 60 * 1000  
       });
-      
+      // ✅ Store in DB as a fallback
+      await prisma.authSession.upsert({
+        where: { userId },
+        update: { state, codeVerifier },
+        create: { userId, state, codeVerifier }
+    });
+
       res.json({ url });
     } catch (error) {
       console.error("Error generating Twitter auth link:", error);
@@ -67,7 +73,19 @@ const twitterAuth = async (req, res) => {
       console.log("- Code Verifier exists:", !!codeVerifier);
       console.log("- User ID:", userId);
       console.log("- Redirect URI:", process.env.TWITTER_REDIRECT_URI);
-      
+       // ✅ Fallback: Retrieve from DB if cookies are missing
+       if (!storedState || !codeVerifier || isNaN(userId)) {
+        const session = await prisma.authSession.findUnique({ where: { state } });
+
+        if (!session) {
+            return res.status(400).json({ error: "Invalid OAuth state" });
+        }
+
+        storedState = session.state;
+        codeVerifier = session.codeVerifier;
+        userId = session.userId;
+    }
+
       if (!state || !code || state !== storedState) {
         return res.status(400).json({ error: "Invalid OAuth state" });
       }
@@ -105,7 +123,8 @@ const twitterAuth = async (req, res) => {
           isTwitterLoggedIn: true,
         },
       });
-      
+      // ✅ Clean up session from DB
+        await prisma.authSession.deleteMany({ where: { userId } });
       // Clear cookies
       res.clearCookie("state");
       res.clearCookie("codeVerifier");
