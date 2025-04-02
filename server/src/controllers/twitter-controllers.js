@@ -170,11 +170,11 @@ const pastImmediateTweet = async (content, scheduleTime, userId) => {
 const autoScheduleTweets = async (req, res) => {
   try {
     const { content, scheduleTime } = req.body;
-    // logger.info("Received request to auto-schedule tweet:", JSON.stringify(req.body));
+    logger.info("Received request to auto-schedule tweet:", JSON.stringify(req.body));
     if (!content || !scheduleTime) {
       return res.status(400).json({ message: "Content and schedule time required" });
     }
-    // console.log(`Content: ${content}, Schedule Time: ${scheduleTime}`);
+    console.log(`Content: ${content}, Schedule Time: ${scheduleTime}`);
     const userId = req.user.id; 
     const user = await prisma.user.findUnique({ where: { id: req.user.id } });
     if (!user || !user.xAccessToken) {
