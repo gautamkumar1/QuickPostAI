@@ -211,10 +211,7 @@ import { prisma } from "../database/db.config.js";
 //     return res.status(500).json({ message: "Server error", error: error.message });
 //   }
 // };
-const { TwitterApi } = require('twitter-api-v2');
-const cron = require('node-cron');
-const logger = require('./logger'); // Assuming you have a logger setup
-const prisma = require('./prisma'); // Assuming Prisma is set up
+
 
 // Store active cron jobs (in-memory for this example; consider a persistent store for production)
 const scheduledJobs = new Map();
