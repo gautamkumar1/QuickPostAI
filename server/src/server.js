@@ -8,7 +8,7 @@ import tweetsRoutes from "./routes/tweet-routes.js";
 import logger from "./../logger.js";
 import morgan from "morgan";
 import cors from "cors";
-import { restoreScheduledTweets, shutdownScheduledJobs } from "./controllers/twitter-controllers.js";
+import { reloadScheduledTweets } from "./controllers/twitter-controllers.js";
 dotenv.config()
 const app = express()
 const corsOptions = {
@@ -71,20 +71,7 @@ keepAlive();
 connectDB().then(() => {
     app.listen(port, () => {
         logger.info(`Server running on http://localhost:${port}`)
-        restoreScheduledTweets()
-        logger.info("Scheduled tweets restored")
+        reloadScheduledTweets();
+        logger.info("Reloading scheduled tweets")
     })
 })
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  shutdownScheduledJobs();
-  // ... other cleanup code
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  console.log('SIGINT received, shutting down gracefully');
-  shutdownScheduledJobs();
-  // ... other cleanup code
-  process.exit(0);
-});
