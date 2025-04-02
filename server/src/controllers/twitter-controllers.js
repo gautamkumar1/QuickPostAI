@@ -17,18 +17,21 @@ const futureScheduleTweet = async (content, scheduleTime, user) => {
     const { xAccessToken, xRefreshToken } = user;
     const userClient = new TwitterApi(user.xAccessToken);
     const userId = user.id;
-    const tweetTime = new Date(scheduleTime.replace(" ", "T") + "Z");
-
+    const tweetTime = new Date(scheduleTime);
+    console.log("Received scheduleTime:", scheduleTime);
+console.log("Converted tweetTime (raw):", tweetTime);
+const tweetTimeUTC = new Date(tweetTime.toISOString());
+console.log("Final tweetTime (UTC):", tweetTimeUTC);
     // Store tweet in the database as "pending"
     const scheduledTweet = await prisma.tweets.create({
       data: {
         content,
-        scheduleTime: tweetTime, // Proper Date format
+        scheduleTime: tweetTimeUTC, // Proper Date format
         status: "pending",
         userId,
       },
     });
-
+    
     logger.info(`Tweet scheduled for: ${tweetTime}`);
 
     // Extract time details for cron format
