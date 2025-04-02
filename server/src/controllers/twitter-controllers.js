@@ -11,67 +11,140 @@ import { prisma } from "../database/db.config.js";
 //   accessSecret: process.env.TWITTER_ACCESS_SECRET || "",
 // });
 
+// const futureScheduleTweet = async (content, scheduleTime, user) => {
+//   try {
+//     // Convert `scheduleTime` to a Date object (UTC format)
+//     const { xAccessToken, xRefreshToken } = user;
+//     const userClient = new TwitterApi(user.xAccessToken);
+//     const userId = user.id;
+//     const tweetTime = new Date(scheduleTime);
+//     console.log("Received scheduleTime:", scheduleTime);
+// console.log("Converted tweetTime (raw):", tweetTime);
+// const tweetTimeUTC = new Date(tweetTime.toISOString());
+// console.log("Final tweetTime (UTC):", tweetTimeUTC);
+//     // Store tweet in the database as "pending"
+//     const scheduledTweet = await prisma.tweets.create({
+//       data: {
+//         content,
+//         scheduleTime: scheduleTime, // Proper Date format
+//         status: "pending",
+//         userId,
+//       },
+//     });
+    
+//     logger.info(`Tweet scheduled for: ${scheduleTime}`);
+
+//     // Extract time details for cron format
+//     const minutes = tweetTime.getUTCMinutes();
+//     const hours = tweetTime.getUTCHours();
+//     const day = tweetTime.getUTCDate();
+//     const month = tweetTime.getUTCMonth() + 1; // Months in cron are 1-12
+
+//     // Schedule the tweet using cron
+//     const cronExpression = `${minutes} ${hours} ${day} ${month} *`;
+//     logger.info(`Cron job scheduled with expression: ${cronExpression}`);
+
+//     cron.schedule(cronExpression, async () => {
+//       logger.info("Cron job triggered for scheduled tweet")
+
+//       try {
+//         // Post the tweet
+//         const response = await userClient.v2.tweet(content);
+//         // Update tweet status in the database
+//         await prisma.tweets.update({
+//           where: { id: scheduledTweet.id },
+//           data: { status: "posted" },
+//         });
+
+//         logger.info(`Tweet posted successfully at ${new Date()}:`, response);
+//       } catch (error) {
+//         // Update status to "failed" if tweet fails
+//         await prisma.tweets.update({
+//           where: { id: scheduledTweet.id },
+//           data: { status: "failed" },
+//         });
+
+//         logger.error("Error posting tweet in cron:", error);
+//       }
+//     });
+
+//   } catch (error) {
+//     logger.error("Error scheduling tweet for future:", error);
+//   }
+// };
+
 const futureScheduleTweet = async (content, scheduleTime, user) => {
   try {
-    // Convert `scheduleTime` to a Date object (UTC format)
-    const { xAccessToken, xRefreshToken } = user;
     const userClient = new TwitterApi(user.xAccessToken);
     const userId = user.id;
+
+    // ✅ Ensure `scheduleTime` is always treated as UTC
     const tweetTime = new Date(scheduleTime);
+    const tweetTimeUTC = new Date(tweetTime.toISOString()); // Explicitly in UTC
+
     console.log("Received scheduleTime:", scheduleTime);
-console.log("Converted tweetTime (raw):", tweetTime);
-const tweetTimeUTC = new Date(tweetTime.toISOString());
-console.log("Final tweetTime (UTC):", tweetTimeUTC);
-    // Store tweet in the database as "pending"
+    console.log("Converted tweetTime (raw):", tweetTime);
+    console.log("Final tweetTime (UTC):", tweetTimeUTC);
+
+    // 🚨 Check if tweetTime is in the future
+    const currentTimeUTC = new Date();
+    if (tweetTimeUTC <= currentTimeUTC) {
+      return console.log("🚨 Cannot schedule a tweet in the past!");
+    }
+
+    // ✅ Store the tweet in the database
     const scheduledTweet = await prisma.tweets.create({
       data: {
         content,
-        scheduleTime: tweetTimeUTC, // Proper Date format
+        scheduleTime: tweetTimeUTC, // Store as UTC in DB
         status: "pending",
         userId,
       },
     });
-    
-    logger.info(`Tweet scheduled for: ${tweetTime}`);
 
-    // Extract time details for cron format
-    const minutes = tweetTime.getUTCMinutes();
-    const hours = tweetTime.getUTCHours();
-    const day = tweetTime.getUTCDate();
-    const month = tweetTime.getUTCMonth() + 1; // Months in cron are 1-12
+    logger.info(`Tweet scheduled for: ${tweetTimeUTC}`);
 
-    // Schedule the tweet using cron
+    // ✅ Extract time details for cron format (UTC)
+    const minutes = tweetTimeUTC.getUTCMinutes();
+    const hours = tweetTimeUTC.getUTCHours();
+    const day = tweetTimeUTC.getUTCDate();
+    const month = tweetTimeUTC.getUTCMonth() + 1; // Months in cron are 1-12
+
+    // ✅ Construct valid cron expression
     const cronExpression = `${minutes} ${hours} ${day} ${month} *`;
     logger.info(`Cron job scheduled with expression: ${cronExpression}`);
 
+    // ✅ Schedule cron job
     cron.schedule(cronExpression, async () => {
-      logger.info("Cron job triggered for scheduled tweet")
+      logger.info("🚀 Cron job triggered for scheduled tweet");
 
       try {
-        // Post the tweet
+        // 🔥 Post the tweet
         const response = await userClient.v2.tweet(content);
-        // Update tweet status in the database
+
+        // ✅ Update status in DB
         await prisma.tweets.update({
           where: { id: scheduledTweet.id },
           data: { status: "posted" },
         });
 
-        logger.info(`Tweet posted successfully at ${new Date()}:`, response);
+        logger.info(`✅ Tweet posted successfully at ${new Date()}:`, response);
       } catch (error) {
-        // Update status to "failed" if tweet fails
+        // ❌ If posting fails, update status to "failed"
         await prisma.tweets.update({
           where: { id: scheduledTweet.id },
           data: { status: "failed" },
         });
 
-        logger.error("Error posting tweet in cron:", error);
+        logger.error("❌ Error posting tweet in cron:", error);
       }
     });
 
   } catch (error) {
-    logger.error("Error scheduling tweet for future:", error);
+    logger.error("❌ Error scheduling tweet for future:", error);
   }
 };
+
 
 const pastImmediateTweet = async (content, scheduleTime, userId) => {
   try {
