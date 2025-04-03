@@ -258,7 +258,11 @@ const futureScheduleTweet = async (content, scheduleTime, user) => {
     const userId = user.id;
 
     // Ensure scheduleTime is treated as UTC
-    const tweetTimeUTC = new Date(scheduleTime); // Assuming input is in a parseable format
+    // Assuming input is in a parseable format
+    // const tweetTimeUTC = new Date(scheduleTime);
+    let tweetTimeUTC = new Date(scheduleTime);
+tweetTimeUTC.setUTCHours(tweetTimeUTC.getUTCHours()); // Ensure it's treated as UTC
+
     if (isNaN(tweetTimeUTC.getTime())) {
       throw new Error("Invalid scheduleTime format");
     }
