@@ -36,7 +36,7 @@ export default function HowItWorksSection() {
   }
 
   return (
-    <div className="relative z-20 py-16 px-4 max-w-7xl mx-auto">
+    <div className="relative z-10 py-16 px-4 max-w-7xl mx-auto mt-20">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -522,22 +522,7 @@ export default function HowItWorksSection() {
         ))}
       </div>
 
-      {/* Action button */}
-      <motion.div
-        className="flex justify-center mt-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <motion.button
-          className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-teal-500 text-white rounded-full font-medium flex items-center space-x-2"
-          whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(139, 92, 246, 0.5)" }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <span>Try QuickPostAI Now</span>
-          <IconArrowRight size={16} />
-        </motion.button>
-      </motion.div>
+     
     </div>
   )
 }
