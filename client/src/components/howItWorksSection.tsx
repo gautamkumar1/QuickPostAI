@@ -7,7 +7,7 @@ import { IconBrandTwitter, IconArrowRight, IconCheck, IconLoader2 } from "@table
 
 
 export default function HowItWorksSection() {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const [_hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [activeStep, setActiveStep] = useState<number | null>(null)
   const [progress, setProgress] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
