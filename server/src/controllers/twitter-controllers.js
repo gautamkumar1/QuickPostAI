@@ -246,4 +246,21 @@ const createXPost = async (req, res) => {
   }
 };
 
-export { autoScheduleTweets,getScheduledTweets,reloadScheduledTweets,createXPost};
+const getPosts = async (req, res) => {
+  try {
+    const posts = await prisma.createdPosts.findMany({
+      where: { userId: req.user.id },
+      orderBy: { createdAt: "asc" },
+      select:{
+        id:true,
+        post:true,
+      }
+    })
+    return res.status(200).json(posts);
+  } catch (error) {
+    logger.error("Error fetching posts:", error);
+    return res.status(500).json({error: error.message });
+  }
+}
+
+export { autoScheduleTweets,getScheduledTweets,reloadScheduledTweets,createXPost,getPosts};
