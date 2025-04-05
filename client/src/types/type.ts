@@ -15,3 +15,8 @@ export type UserData = {
     avatarUrl: string
     isTwitterLoggedIn: boolean
 }
+
+export type PostData = {
+    topic: string;
+    tone: string;
+}

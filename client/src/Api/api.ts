@@ -1,6 +1,7 @@
-import { LoginData, RegisterData } from "@/types/type";
+import { LoginData, PostData, RegisterData } from "@/types/type";
 import useAuthStore from "@/zustand/authStore";
 import axios from "axios";
+import { log } from "console";
  
 
 
@@ -171,5 +172,15 @@ export const xLogout = async () => {
     console.log(`Error while logging out from Twitter ${error}`);
     throw error;
     
+  }
+}
+
+export const createXPosts = async (data: PostData) => {
+  try {
+    const response = await axiosInstance.post('/createxpost', data);
+    return response.data;
+  } catch (error) {
+    console.log(`Error while creating X post ${error}`);
+    throw error;
   }
 }

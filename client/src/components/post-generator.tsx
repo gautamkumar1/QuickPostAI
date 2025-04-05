@@ -11,22 +11,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PostHistoryDialog } from "@/components/post-history-dialog"
 import { TopicSuggestionsDialog } from "@/components/topic-suggestions-dialog"
 import { toast } from "sonner"
+import { useMutation } from "@tanstack/react-query"
+import { createXPosts } from "@/Api/api"
 
 // Mock API call - replace with your actual API
-const generatePost = async (topic: string, tone: string): Promise<string> => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1500))
 
-  const responses = {
-    professional: `📊 New insights on ${topic}! Our latest analysis shows significant trends that could transform how we approach this space. What are your thoughts on the evolving landscape? #ProfessionalInsights #${topic.replace(/\s+/g, "")}`,
-    casual: `Just thinking about ${topic} today... anyone else fascinated by this? Drop your thoughts below! 👇 #${topic.replace(/\s+/g, "")} #JustSaying`,
-    humorous: `🤣 Who else is laughing about ${topic}? Can't believe this is still a thing in 2023! RT if you've been there too! #${topic.replace(/\s+/g, "")} #LOL`,
-    controversial: `Hot take: ${topic} is not what everyone thinks it is. I've got some thoughts that might challenge the consensus... 🔥 #${topic.replace(/\s+/g, "")} #ChangeMyMind`,
-    inspirational: `✨ The journey through ${topic} teaches us resilience and growth. Never give up on your dreams, even when the path seems unclear. #${topic.replace(/\s+/g, "")} #Motivation`,
-  }
-
-  return responses[tone as keyof typeof responses] || responses.casual
-}
 const toneOptions = [
     { value: "professional", label: "💼 Professional" },
     { value: "casual", label: "🤙 Casual" },
@@ -44,36 +33,22 @@ export function PostGenerator() {
   const [topic, setTopic] = useState("")
   const [tone, setTone] = useState("")
   const [generatedPost, setGeneratedPost] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  // const [isLoading, setIsLoading] = useState(false)
   const [savedPosts, setSavedPosts] = useState<Array<{ topic: string; tone: string; content: string }>>([])
 
+  const muataion = useMutation({
+    mutationFn: createXPosts,
+    onSuccess: (data) => {
+      toast.success("Post Created Successfully")
+      setGeneratedPost(data.aiResponse);
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!topic || !tone) {
-      toast.error("Please provide both a topic and tone.")
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      const post = await generatePost(topic, tone)
-      setGeneratedPost(post)
-
-      // Save to history
-      setSavedPosts((prev) => [
-        ...prev,
-        {
-          topic,
-          tone,
-          content: post,
-        },
-      ])
-    } catch (error) {
-      toast.error("Error generating post. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
+    muataion.mutate({ topic, tone })
   }
 
   const copyToClipboard = () => {
@@ -118,8 +93,8 @@ export function PostGenerator() {
         </div>
 
         <div className="flex justify-between items-center">
-          <Button type="submit" disabled={isLoading} className="w-full md:w-auto">
-            {isLoading ? (
+          <Button type="submit" disabled={muataion.isPending} className="w-full md:w-auto">
+            {muataion.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Generating...
