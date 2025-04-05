@@ -4,7 +4,7 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import {StringOutputParser} from "@langchain/core/output_parsers"
 import { prisma } from "../database/db.config.js";
 import logger from "../../logger.js";
-const model = new ChatGoogleGenerativeAI({
+export const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
   modelName: "gemini-2.0-flash",
   temperature: 0,

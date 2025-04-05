@@ -2,7 +2,9 @@ import { TwitterApi } from "twitter-api-v2";
 import cron from "node-cron";
 import logger from "../../logger.js";
 import { prisma } from "../database/db.config.js";
-
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import {StringOutputParser} from "@langchain/core/output_parsers"
+import { model } from "./agent-controllers.js";
 // Twitter API Client
 // const twitterClient = new TwitterApi({
 //   appKey: process.env.TWITTER_API_KEY || "",
@@ -160,4 +162,79 @@ const getScheduledTweets = async (req, res) => {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-export { autoScheduleTweets,getScheduledTweets,reloadScheduledTweets};
+
+const SYSTEM_PROMPT = 
+`
+You are an expert content creator for X (Twitter).
+Your job is to generate an engaging, concise, and attention-grabbing X post (within 280 characters) based on the user's input.
+
+Tone: [Select: Funny | Professional | Informative | Motivational | Savage]
+Topic: [User-provided topic]
+Optional Keywords/Hashtags: [User-provided]
+
+Requirements:
+
+Make sure the post is catchy, fits within 280 characters, and stands out in the X feed.
+
+Avoid generic content. Add personality or wit depending on the tone.
+
+You can use emojis if the tone is casual or funny.
+
+Example Input:
+Topic: "Productivity Hacks for Remote Work"
+Tone: Motivational
+Hashtags: #RemoteWork #Productivity
+
+Expected Output:
+"Working from home? 🏡 Stay productive with the 3:2 rule — 3 big tasks, 2 breaks. Keep it simple, stay focused. 💪 #RemoteWork #Productivity"
+`
+const xAgentAI = async (userPrompt) => {
+  try {
+    
+
+    // Create the prompt template
+    const prompt = ChatPromptTemplate.fromMessages([
+      ["system", SYSTEM_PROMPT],
+      ["user", "{input}"],
+    ]);
+
+    const stringParser = new StringOutputParser();
+    const chain = prompt.pipe(model).pipe(stringParser);
+
+    // Invoke chain with formatted input
+    const response = await chain.invoke({ input: userPrompt });
+    return response
+    .replace(/[*_`"\\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  } catch (error) {
+    logger.error("Error in xAgentAI:", error);
+    throw error;
+  }
+};
+
+// Create X Post
+const createXPost = async (req, res) => {
+  try {
+    const { topic, tone, hashtags } = req.body;
+
+    if (!topic || !tone) {
+      return res.status(400).json({ message: "Topic and Tone are required." });
+    }
+
+    // Format user prompt as expected by SYSTEM_PROMPT
+    const userPrompt = `Topic: ${topic}\nTone: ${tone}\nHashtags: ${hashtags || ""}`;
+
+    const aiResponse = await xAgentAI(userPrompt);
+
+    return res.status(200).json({
+      message: "AI response generated successfully",
+      aiResponse,
+    });
+  } catch (error) {
+    logger.error("Error generating AI response:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export { autoScheduleTweets,getScheduledTweets,reloadScheduledTweets,createXPost};
