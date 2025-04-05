@@ -44,3 +44,11 @@ model Tweets {
   userId       Int?      
   createdAt    DateTime @default(now())
 }
+
+model CreatedPosts {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  post     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

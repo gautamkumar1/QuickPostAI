@@ -222,7 +222,6 @@ const xAgentAI = async (userPrompt) => {
 const createXPost = async (req, res) => {
   try {
     const { topic, tone, hashtags } = req.body;
-
     if (!topic || !tone) {
       return res.status(400).json({ message: "Topic and Tone are required." });
     }
@@ -231,7 +230,13 @@ const createXPost = async (req, res) => {
     const userPrompt = `Topic: ${topic}\nTone: ${tone} || ""}`;
 
     const aiResponse = await xAgentAI(userPrompt);
-
+    console.log("AI response:", aiResponse);
+    await prisma.createdPosts.create({
+      data:{
+        userId: req.user.id,
+        post: aiResponse,
+      }
+    })
     return res.status(200).json({
       aiResponse,
     });
