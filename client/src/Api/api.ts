@@ -1,9 +1,6 @@
 import { LoginData, PostData, RegisterData } from "@/types/type";
 import useAuthStore from "@/zustand/authStore";
 import axios from "axios";
-import { log } from "console";
- 
-
 
 // const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const VITE_BACKEND_URL = import.meta.env.VITE_NODE_ENV === "production"
