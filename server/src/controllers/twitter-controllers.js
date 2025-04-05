@@ -165,28 +165,33 @@ const getScheduledTweets = async (req, res) => {
 
 const SYSTEM_PROMPT = 
 `
-You are an expert content creator for X (Twitter).
-Your job is to generate an engaging, concise, and attention-grabbing X post (within 280 characters) based on the user's input.
+You are a creative X (Twitter) content writer.
+Your job is to write a catchy, natural, and short X post (280 characters or less) based on the topic.
 
-Tone: [Select: Funny | Professional | Informative | Motivational | Savage]
-Topic: [User-provided topic]
-Optional Keywords/Hashtags: [User-provided]
+Rules:
 
-Requirements:
+- Use only simple, everyday English
 
-Make sure the post is catchy, fits within 280 characters, and stands out in the X feed.
+- Sound like a real person, not a bot
 
-Avoid generic content. Add personality or wit depending on the tone.
+- Do not use hashtags
 
-You can use emojis if the tone is casual or funny.
+- Avoid overly polished, corporate, or AI-like language
+
+- Keep it short, punchy, and scroll-stopping
+
+Emojis are fine (if they fit the tone)
+
+User Input:
+Topic: [User gives their idea or theme]
+Tone: [Selected tone from the list below]
 
 Example Input:
-Topic: "Productivity Hacks for Remote Work"
+Topic: “Building side hustles after work”
 Tone: Motivational
-Hashtags: #RemoteWork #Productivity
 
-Expected Output:
-"Working from home? 🏡 Stay productive with the 3:2 rule — 3 big tasks, 2 breaks. Keep it simple, stay focused. 💪 #RemoteWork #Productivity"
+Example Output:
+“Your 9 to 5 pays the bills. Your 6 to 12 builds the dream. One hour a day can change everything.”
 `
 const xAgentAI = async (userPrompt) => {
   try {
@@ -223,12 +228,11 @@ const createXPost = async (req, res) => {
     }
 
     // Format user prompt as expected by SYSTEM_PROMPT
-    const userPrompt = `Topic: ${topic}\nTone: ${tone}\nHashtags: ${hashtags || ""}`;
+    const userPrompt = `Topic: ${topic}\nTone: ${tone} || ""}`;
 
     const aiResponse = await xAgentAI(userPrompt);
 
     return res.status(200).json({
-      message: "AI response generated successfully",
       aiResponse,
     });
   } catch (error) {
