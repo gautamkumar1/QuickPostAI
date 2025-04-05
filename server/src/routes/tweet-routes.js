@@ -10,5 +10,5 @@ router.get("/auth/twitter/callback", twitterCallback);
 router.get("/getScheduledTweets",isAuthenticated,getScheduledTweets)
 router.get("/auth/xlogout",isAuthenticated,twitterLogout);
 router.post("/createxpost",isAuthenticated,generateLimiter,createXPost)
-router.post("/getposts",isAuthenticated,getPosts)
+router.get("/getposts",isAuthenticated,getPosts)
 export default router;

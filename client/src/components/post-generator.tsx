@@ -11,10 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PostHistoryDialog } from "@/components/post-history-dialog"
 import { TopicSuggestionsDialog } from "@/components/topic-suggestions-dialog"
 import { toast } from "sonner"
-import { useMutation } from "@tanstack/react-query"
-import { createXPosts } from "@/Api/api"
-
-// Mock API call - replace with your actual API
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { createXPosts, getXPosts } from "@/Api/api"
 
 const toneOptions = [
     { value: "professional", label: "💼 Professional" },
@@ -29,12 +27,14 @@ const toneOptions = [
     { value: "genz", label: "🗣️ Gen-Z Style (with slang)" }
   ];
   
+  interface getPostData{
+    id: number; 
+    post: string;
+  }
 export function PostGenerator() {
   const [topic, setTopic] = useState("")
   const [tone, setTone] = useState("")
   const [generatedPost, setGeneratedPost] = useState("")
-  // const [isLoading, setIsLoading] = useState(false)
-  const [savedPosts, setSavedPosts] = useState<Array<{ topic: string; tone: string; content: string }>>([])
 
   const muataion = useMutation({
     mutationFn: createXPosts,
@@ -45,6 +45,10 @@ export function PostGenerator() {
     onError: (error) => {
       toast.error(error.message)
     },
+  })
+  const {data} = useQuery<getPostData[]>({
+    queryKey: ["getXPosts"],
+    queryFn: getXPosts,
   })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -108,7 +112,7 @@ export function PostGenerator() {
           </Button>
 
           <div className="hidden md:flex space-x-2">
-            <PostHistoryDialog posts={savedPosts} />
+            <PostHistoryDialog posts={data ?? []} />
             <TopicSuggestionsDialog onSelectTopic={(selectedTopic) => setTopic(selectedTopic)} />
           </div>
         </div>
@@ -116,7 +120,7 @@ export function PostGenerator() {
 
       {/* Mobile dialog buttons */}
       <div className="flex space-x-2 md:hidden">
-        <PostHistoryDialog posts={savedPosts} />
+        <PostHistoryDialog posts={data ?? []} />
         <TopicSuggestionsDialog onSelectTopic={(selectedTopic) => setTopic(selectedTopic)} />
       </div>
 

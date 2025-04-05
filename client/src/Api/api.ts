@@ -181,3 +181,13 @@ export const createXPosts = async (data: PostData) => {
     throw error;
   }
 }
+
+export const getXPosts = async () => {
+  try {
+    const response = await axiosInstance.get('/getposts');
+    return response.data;
+  } catch (error) {
+    console.log(`Error while fetching X posts ${error}`);
+    throw error;
+  }
+}

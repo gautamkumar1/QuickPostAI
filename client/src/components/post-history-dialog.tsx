@@ -15,9 +15,8 @@ import { toast } from "sonner"
 
 interface PostHistoryDialogProps {
   posts: Array<{
-    topic: string
-    tone: string
-    content: string
+    id: number
+    post: string
   }>
 }
 
@@ -53,16 +52,12 @@ export function PostHistoryDialog({ posts }: PostHistoryDialogProps) {
               {posts.map((post, index) => (
                 <div key={index} className="border rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h4 className="font-medium">{post.topic}</h4>
-                      <p className="text-sm text-muted-foreground capitalize">{post.tone}</p>
-                    </div>
-                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(post.content)}>
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(post.post)}>
                       <Copy className="h-4 w-4" />
                       <span className="sr-only">Copy</span>
                     </Button>
                   </div>
-                  <p className="text-sm mt-2 bg-muted p-3 rounded">{post.content}</p>
+                  <p className="text-sm mt-2 bg-muted p-3 rounded">{post.post}</p>
                 </div>
               ))}
             </div>
