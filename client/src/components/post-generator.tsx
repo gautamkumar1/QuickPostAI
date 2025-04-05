@@ -27,7 +27,19 @@ const generatePost = async (topic: string, tone: string): Promise<string> => {
 
   return responses[tone as keyof typeof responses] || responses.casual
 }
-
+const toneOptions = [
+    { value: "professional", label: "💼 Professional" },
+    { value: "casual", label: "🤙 Casual" },
+    { value: "humorous", label: "😄 Funny" },
+    { value: "controversial", label: "📢 Bold & Direct" },
+    { value: "inspirational", label: "🔥 Motivational" },
+    { value: "chill", label: "✨ Chill" },
+    { value: "insightful", label: "🤓 Smart & Insightful" },
+    { value: "thoughtful", label: "🧠 Thoughtful" },
+    { value: "relatable", label: "🤝 Relatable" },
+    { value: "genz", label: "🗣️ Gen-Z Style (with slang)" }
+  ];
+  
 export function PostGenerator() {
   const [topic, setTopic] = useState("")
   const [tone, setTone] = useState("")
@@ -95,11 +107,11 @@ export function PostGenerator() {
                 <SelectValue placeholder="Select a tone" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="professional">Professional</SelectItem>
-                <SelectItem value="casual">Casual</SelectItem>
-                <SelectItem value="humorous">Humorous</SelectItem>
-                <SelectItem value="controversial">Controversial</SelectItem>
-                <SelectItem value="inspirational">Inspirational</SelectItem>
+              {toneOptions.map((option) => (
+  <SelectItem key={option.value} value={option.value}>
+    {option.label}
+  </SelectItem>
+))}
               </SelectContent>
             </Select>
           </div>

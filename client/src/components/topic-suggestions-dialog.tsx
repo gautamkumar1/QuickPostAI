@@ -18,27 +18,28 @@ interface TopicSuggestionsDialogProps {
 
 // Sample topic suggestions - you can replace with your own or fetch from an API
 const TOPIC_SUGGESTIONS = [
-  "Artificial Intelligence in Healthcare",
-  "Sustainable Fashion Trends",
-  "Remote Work Best Practices",
-  "Cryptocurrency Market Analysis",
-  "Mental Health Awareness",
-  "Space Exploration Breakthroughs",
-  "Plant-Based Diet Benefits",
-  "Digital Marketing Strategies",
-  "Smart Home Technology",
-  "Personal Finance Tips",
-  "Travel Destinations 2023",
-  "Fitness and Wellness Routines",
-  "Climate Change Solutions",
-  "NFTs and Digital Art",
-  "Productivity Hacks",
-  "Electric Vehicle Innovations",
-  "Mindfulness and Meditation",
-  "Startup Success Stories",
-  "Gaming Industry Trends",
-  "Parenting in the Digital Age",
-]
+    "🔥 JavaScript tricks I wish I knew earlier",
+    "😵‍💫 My worst bug ever (and what it taught me)",
+    "🧠 Clean code habits that actually make sense",
+    "🚀 How I built a side project in 24 hours",
+    "💼 Freelancing vs Full-time Dev: My take",
+    "📈 Growing as a dev on X — what works in 2025",
+    "🤖 Building with AI as a solo dev: worth it?",
+    "📚 3 coding myths that held me back",
+    "⚡ VS Code extensions that actually boost productivity",
+    "☕ Hot take: TypeScript isn’t always necessary",
+    "🔥 That one NPM package that changed everything",
+    "🧩 Learning DSA in 2025 — still relevant?",
+    "😬 When Git goes wrong: dev horror stories",
+    "📊 Dev tools I can't live without",
+    "🔒 Why every dev should understand basic security",
+    "💡 How I explain complex tech to non-devs",
+    "🌍 Open-source changed my life — here’s how",
+    "🧵 Why every developer should build in public",
+    "🛠️ React, Vue, Svelte: which one and why?",
+    "👀 Underrated dev accounts you should follow on X"
+  ];
+  
 
 export function TopicSuggestionsDialog({ onSelectTopic }: TopicSuggestionsDialogProps) {
   const [open, setOpen] = useState(false)
