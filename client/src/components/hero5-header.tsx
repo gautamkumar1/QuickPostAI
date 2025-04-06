@@ -73,7 +73,7 @@ export const HeroHeader = () => {
                                 duration={500}
                                 className="flex items-center space-x-2">
 
-                                <Logo className="w-14 h-14" />
+                                <Logo/>
 
 
                             </ScrollLink>

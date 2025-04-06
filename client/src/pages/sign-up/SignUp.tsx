@@ -76,7 +76,7 @@ const handleSubmit = (e: React.FormEvent) => {
           
           <div className="text-center">
             <Link to="/" aria-label="go home" className="mx-auto block w-fit">
-              <Logo className="w-12 h-12"/>
+              <Logo />
             </Link>
             <h1 className="text-title mb-1 mt-4 text-xl font-semibold">Join QuickPostAI Today</h1>
 <p className="text-sm">Create an account to turn blogs into impactful X posts.</p>

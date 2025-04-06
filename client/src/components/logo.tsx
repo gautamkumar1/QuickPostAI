@@ -1,21 +1,22 @@
 import { cn } from '../lib/utils'
 
-export const Logo = ({ className }: { className?: string }) => {
+export const Logo = () => {
     return (
-        <svg 
-            className={cn('w-auto h-auto', className)} 
-            viewBox="0 0 200 200" 
-            xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="4"
-        >
-            <line x1="40" y1="60" x2="160" y2="60" strokeLinecap="round" />
-            <line x1="40" y1="90" x2="140" y2="90" strokeLinecap="round" />
-            <line x1="40" y1="120" x2="120" y2="120" strokeLinecap="round" />
-            <path d="M130 150 C150 150, 170 130, 170 110 C170 90, 150 70, 130 70 C110 70, 90 90, 90 110 C90 130, 110 150, 130 150 Z" fill="none" stroke="currentColor" />
-            <polygon points="125,80 135,100 115,120" fill="currentColor" />
-        </svg>
+        <svg width="260" height="60" viewBox="0 0 260 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  {/* <!-- Icon: Abstract chat + sparkle --> */}
+
+
+  {/* <!-- Logo Text --> */}
+  <text x="70" y="38" font-family="Verdana, sans-serif" font-size="24" fill="white" font-weight="bold">
+    QuickPost
+  </text>
+  <text x="185" y="38" font-family="Verdana, sans-serif" font-size="24" fill="#38BDF8" font-weight="bold">
+    AI
+  </text>
+</svg>
+
+      
+
     )
 }
 

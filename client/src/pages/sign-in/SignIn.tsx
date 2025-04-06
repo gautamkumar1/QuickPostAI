@@ -82,7 +82,7 @@ export default function SignInForm() {
 
                 <div className="text-center">
                     <Link to="/" aria-label="go home" className="mx-auto block w-fit">
-                        <Logo className="w-12 h-12"/>
+                        <Logo />
                     </Link>
                     <h1 className="text-title mb-1 mt-4 text-xl font-semibold">Welcome Back to QuickPostAI</h1>
                     <p className="text-sm">Log in to convert blogs to viral X posts in seconds</p>
