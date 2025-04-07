@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon node src/server.js",
-    "prisma:generate": "npx prisma generate", 
+    "prisma:generate": "npx prisma generate",
     "build": "npm run prisma:generate"
   },
   "type": "module",
@@ -30,6 +30,7 @@
     "express-rate-limit": "^7.5.0",
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.3.19",
+    "moment-timezone": "^0.5.48",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
     "nodemon": "^3.1.9",

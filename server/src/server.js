@@ -71,7 +71,7 @@ keepAlive();
 connectDB().then(() => {
     app.listen(port, () => {
         logger.info(`Server running on http://localhost:${port}`)
-        // reloadScheduledTweets();
+        reloadScheduledTweets();
         logger.info("Reloading scheduled tweets")
     })
 })
