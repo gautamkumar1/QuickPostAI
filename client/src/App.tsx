@@ -12,6 +12,7 @@ import ScheduledTweetsSkeleton from "./skeletons/ScheduledTweetsSkeleton";
 const ConvertBlog = lazy(() => import("./pages/convert-blog/ConvertBlog"));
 const AutoSchedule = lazy(() => import("./pages/auto-schedule/AutoSchedule"));
 const CreatePost = lazy(() => import("./pages/create-post/CreatePost"));
+const EngageLabDashboard = lazy(() => import("./pages/enage-lab/EnageLab"));
 const UnauthorizedPage = lazy(() => import("./pages/unauthorized/Unauthorized"));
 const ScheduledTweetsPage = lazy(() => import("./pages/scheduled-tweets/ScheduledTweets"));
 
@@ -75,6 +76,16 @@ function App() {
               <LazyLoad height={200} offset={100} once>
                 <Suspense fallback={null}>
                   <CreatePost />
+                </Suspense>
+              </LazyLoad>
+            }
+          />
+          <Route
+            path="engage-lab"
+            element={
+              <LazyLoad height={200} offset={100} once>
+                <Suspense fallback={null}>
+                  <EngageLabDashboard />
                 </Suspense>
               </LazyLoad>
             }

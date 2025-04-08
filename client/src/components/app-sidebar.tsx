@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import {BookOpen, Calendar, PenSquare, View } from "lucide-react"
+import {BookOpen, Calendar, PenSquare, View,Blend } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -44,11 +44,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { title: "Auto Schedule Post", url: "/dashboard/auto-schedule", icon: Calendar, isActive: pathname === "/dashboard/auto-schedule" },
     { title: "View Scheduled Post", url: "/dashboard/view-scheduled-tweets", icon: View , isActive: pathname === "/dashboard/view-scheduled-tweets" },
     { title: "Create Post", url: "/dashboard/create-post", icon: PenSquare, isActive: pathname === "/dashboard/create-post" },
+    { title: "Engage Lab", url: "/dashboard/engage-lab", icon: Blend, isActive: pathname === "/dashboard/engage-lab" },
   ];
 
 
   return (
     <Sidebar collapsible="icon" {...props} >
+      
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -58,6 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
             
               <CustomLogo />
+              
           </div>
           <div className="flex flex-col gap-0.5 leading-none">
           
