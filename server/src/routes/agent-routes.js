@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { getTweetsDetails, tweetGenerate } from "../controllers/agent-controllers.js";
+import { getTweetsDetails, replyController, tweetGenerate } from "../controllers/agent-controllers.js";
 import { generateLimiter } from "../controllers/rate-limit-controllers.js";
 import isAuthenticated from "../middleware/auth-middleware.js";
 
@@ -8,4 +8,5 @@ router.post("/tweetGenerate",isAuthenticated,generateLimiter,tweetGenerate)
 // test route
 // router.post("/tweetGenerate",isAuthenticated,tweetGenerate)
 router.get("/getTweetsDetails",isAuthenticated,getTweetsDetails)
+router.post("/replytweet",replyController)
 export default router

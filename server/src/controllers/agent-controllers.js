@@ -4,6 +4,9 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import {StringOutputParser} from "@langchain/core/output_parsers"
 import { prisma } from "../database/db.config.js";
 import logger from "../../logger.js";
+import {replyPrompt}  from "../utils/prompt.js";
+import dotenv from "dotenv";
+dotenv.config();
 export const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
   modelName: "gemini-2.0-flash",
@@ -166,4 +169,40 @@ const getTweetsDetails = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
-export { tweetGenerate,getTweetsDetails };
+
+/*
+*** EngageLab - CONTROLLERS ***
+*/
+
+const replyController = async (req, res) => {
+  try {
+    const { tweet } = req.body;
+    if (!tweet) {
+      return res.status(400).json({ message: "Tweet is required" });
+    }
+    const responseReply = ChatPromptTemplate.fromMessages([
+      [
+        "system",
+        `
+        ${replyPrompt}
+        `
+      ],
+      ["user", "Reply to this tweet: {tweet}"],
+    ]);
+    const stringParser = new StringOutputParser();
+    const chain= responseReply.pipe(model).pipe(stringParser);
+    const response = await chain.invoke({ tweet })
+    // logger.info(`Response :::: ${response}`);
+    const cleanedResponse = String(response)
+  .replace(/[*_`"\\]/g, '')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+res.status(200).json({ reply: cleanedResponse });
+
+  } catch (error) {
+    logger.error("Error generating reply:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+export { tweetGenerate,getTweetsDetails,replyController };
