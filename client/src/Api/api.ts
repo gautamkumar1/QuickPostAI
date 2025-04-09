@@ -191,3 +191,14 @@ export const getXPosts = async () => {
     throw error;
   }
 }
+
+export const replyTweet = async (tweeet:string) => {
+  try {
+    const response = await axiosInstance.post("/replytweet",{ tweet: tweeet });
+    return response.data;
+  } catch (error) {
+    console.log(`Error while replying X tweeet ${error}`);
+    return error;
+    
+  }
+}

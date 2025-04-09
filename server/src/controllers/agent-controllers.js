@@ -5,6 +5,8 @@ import {StringOutputParser} from "@langchain/core/output_parsers"
 import { prisma } from "../database/db.config.js";
 import logger from "../../logger.js";
 import {replyPrompt}  from "../utils/prompt.js";
+import dotenv from "dotenv";
+dotenv.config();
 export const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
   modelName: "gemini-2.0-flash",

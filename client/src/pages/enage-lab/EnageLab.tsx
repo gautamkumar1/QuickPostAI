@@ -19,6 +19,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
+import { useMutation } from "@tanstack/react-query"
+import { replyTweet } from "@/Api/api"
 
 // Tool data
 const engageTools = [
@@ -130,14 +132,32 @@ export default function EngageLabDashboard() {
     }, 300)
   }
 
-  // Handle form submission
+  /*
+  ----------------> MUTATIONS ---------------------->
+  */
+const mutation = useMutation({
+  mutationFn:replyTweet,
+  onSuccess(data) {
+    if (selectedTool?.id === "tweet-reply") {
+      setGeneratedResponse(data.reply)
+      setIsGenerating(false)
+    }
+  },
+  onError(data) {
+    toast.error(data.message)
+    setIsGenerating(false)
+  }
+})
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!userInput.trim()) return
-
+    mutation.mutate(userInput);
     setIsGenerating(true)
     setGeneratedResponse("")
-
+    if (selectedTool?.id === "tweet-reply") {
+      mutation.mutate(userInput)
+      return // Exit early as the response will be set in onSuccess
+    }
     try {
       // Simulate API call to AI service
       // In a real implementation, you would call your AI service here
@@ -145,11 +165,7 @@ export default function EngageLabDashboard() {
 
       // Mock responses based on tool type
       let response = ""
-
       switch (selectedTool?.id) {
-        case "tweet-reply":
-          response = `Great point! I've been thinking about this too. The key insight many miss is how this connects to broader industry trends. What's your take on how this might evolve over the next year? #ThoughtLeadership`
-          break
         case "quote-tweet":
           response = `This is a game-changing perspective that deserves more attention. The implications for how we approach digital engagement are profound. \n\nParticularly insightful is the point about audience retention - something we all need to consider more deeply.`
           break
