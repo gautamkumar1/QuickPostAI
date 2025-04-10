@@ -8,6 +8,7 @@ export function AutoScheduleSection() {
   return (
     <motion.div whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
       <Card className="border-border/40 bg-card/50 shadow-md">
+      
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-primary" />
