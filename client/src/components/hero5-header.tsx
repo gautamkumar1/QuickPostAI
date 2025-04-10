@@ -73,7 +73,9 @@ export const HeroHeader = () => {
                                 duration={500}
                                 className="flex items-center space-x-2">
 
-                                <Logo/>
+<div className="hidden lg:block">
+  <Logo />
+</div>
 
 
                             </ScrollLink>

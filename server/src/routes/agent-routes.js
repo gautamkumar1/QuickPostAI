@@ -8,5 +8,5 @@ router.post("/tweetGenerate",isAuthenticated,generateLimiter,tweetGenerate)
 // test route
 // router.post("/tweetGenerate",isAuthenticated,tweetGenerate)
 router.get("/getTweetsDetails",isAuthenticated,getTweetsDetails)
-router.post("/replytweet",replyController)
+router.post("/replytweet",isAuthenticated,generateLimiter,replyController)
 export default router
