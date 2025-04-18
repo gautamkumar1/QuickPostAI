@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 // Create a log file path
 const logFilePath = path.join(__dirname, 'request_logs.txt');
-
+const personalEmail = process.env.PERSONAL_EMAIL;
 // Function to log IP address
 const logIP = (req, message) => {
     const logEntry = `${new Date().toISOString()} - IP: ${req.ip} - ${message}\n`;
@@ -22,6 +22,9 @@ const generateLimiter = rateLimit({
     max: 3, // Limit each IP to 3 requests per day
     message: { error: "You have reached your daily request limit. Try again tomorrow." },
     headers: true, // Include rate limit info in response headers
+    skip: (req, res) => {
+        return req.user?.email === personalEmail;
+    },    
     handler: (req, res, next) => {
         logIP(req, "Rate limit exceeded");
         res.status(429).json({ error: "You have reached your daily request limit. Try again tomorrow." });
