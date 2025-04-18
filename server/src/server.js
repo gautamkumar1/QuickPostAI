@@ -11,8 +11,9 @@ import cors from "cors";
 import { reloadScheduledTweets } from "./controllers/twitter-controllers.js";
 dotenv.config()
 const app = express()
+const FRONTEND_URL = process.env.NODE_ENV === "development" ? process.env.DEV_FRONTEND_URL : process.env.PROD_FRONTEND_URL
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL,process.env.PROD_FRONTEND_URL], 
+  origin: [FRONTEND_URL], 
   methods: "GET,POST,PUT,DELETE", 
   allowedHeaders: "Content-Type,Authorization", 
   credentials: true,
