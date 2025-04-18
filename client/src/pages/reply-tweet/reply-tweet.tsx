@@ -2,33 +2,28 @@ import { useState } from "react"
 import { Copy, Loader2, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { useMutation } from "@tanstack/react-query"
+import { replyTweet } from "@/Api/api"
 
 export default function TweetReplyGenerator() {
   const [tweet, setTweet] = useState("")
   const [reply, setReply] = useState("")
-  const [isGenerating, setIsGenerating] = useState(false)
   const [copied, setCopied] = useState(false)
-
-  const generateReply = async () => {
+const mutation = useMutation({
+    mutationFn:replyTweet,
+    onSuccess: (data) => {
+      setReply(data.reply)
+    },
+    onError: (error) => {
+      console.error("Error generating reply:", error)
+    },
+})
+  
+const generateReply = async () => {
     if (!tweet.trim()) return
-
-    setIsGenerating(true)
-
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // This is a mock response - in a real app, you'd call an API
-      const responses = [
-        "Thanks for sharing your thoughts! I completely agree with your perspective.",
-        "Interesting point! I've been thinking about this too and have some additional thoughts.",
-        "This is a great take! Would love to discuss this further sometime.",
-        "You've articulated this perfectly. Couldn't have said it better myself.",
-        "I see where you're coming from, though I have a slightly different perspective.",
-      ]
-
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
-      setReply(randomResponse)
-      setIsGenerating(false)
-    }, 1500)
+    
+    // Call the API using React Query mutation
+    mutation.mutate(tweet)
   }
 
   const copyToClipboard = () => {
@@ -60,10 +55,10 @@ export default function TweetReplyGenerator() {
 
           <Button
             onClick={generateReply}
-            disabled={!tweet.trim() || isGenerating}
+            disabled={!tweet.trim() || mutation.isPending}
             className="w-full bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium"
           >
-            {isGenerating ? (
+            {mutation.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Crafting response...
