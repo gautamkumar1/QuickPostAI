@@ -7,12 +7,11 @@ import { UserDashboard } from "./pages/user-dashboard/UserDashboard";
 import ConvertBlogSkeleton from "./skeletons/ConvertBlogSkeleton";
 import TestPage from "./pages/test-page/TestPage";
 import ScheduledTweetsSkeleton from "./skeletons/ScheduledTweetsSkeleton";
-
 // Lazy load components
 const ConvertBlog = lazy(() => import("./pages/convert-blog/ConvertBlog"));
 const AutoSchedule = lazy(() => import("./pages/auto-schedule/AutoSchedule"));
 const CreatePost = lazy(() => import("./pages/create-post/CreatePost"));
-const EngageLabDashboard = lazy(() => import("./pages/enage-lab/EnageLab"));
+const TweetReplyGenerator = lazy(() => import("./pages/reply-tweet/reply-tweet"));
 const UnauthorizedPage = lazy(() => import("./pages/unauthorized/Unauthorized"));
 const ScheduledTweetsPage = lazy(() => import("./pages/scheduled-tweets/ScheduledTweets"));
 
@@ -81,11 +80,11 @@ function App() {
             }
           />
           <Route
-            path="engage-lab"
+            path="reply-tweet"
             element={
               <LazyLoad height={200} offset={100} once>
                 <Suspense fallback={null}>
-                  <EngageLabDashboard />
+                  <TweetReplyGenerator />
                 </Suspense>
               </LazyLoad>
             }

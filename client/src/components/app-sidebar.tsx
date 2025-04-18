@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import {BookOpen, Calendar, PenSquare, View,Blend } from "lucide-react"
+import {BookOpen, Calendar, PenSquare, View, MessageSquareReply, } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -41,10 +41,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navItems: NavItem[] = [
     // { title: "Home", url: "/dashboard", icon: Home, isActive: pathname === "/dashboard" },
     { title: "Convert Blog", url: "/dashboard/convert-blog", icon: BookOpen, isActive: pathname === "/dashboard/convert-blog" },
-    { title: "Auto Schedule Post", url: "/dashboard/auto-schedule", icon: Calendar, isActive: pathname === "/dashboard/auto-schedule" },
-    { title: "View Scheduled Post", url: "/dashboard/view-scheduled-tweets", icon: View , isActive: pathname === "/dashboard/view-scheduled-tweets" },
     { title: "Create Post", url: "/dashboard/create-post", icon: PenSquare, isActive: pathname === "/dashboard/create-post" },
-    { title: "Engage Lab", url: "/dashboard/engage-lab", icon: Blend, isActive: pathname === "/dashboard/engage-lab" },
+    { title: "Reply Tweet", url: "/dashboard/reply-tweet", icon: MessageSquareReply, isActive: pathname === "/dashboard/reply-tweet" },
+    { title: "Auto Schedule Post", url: "/dashboard/auto-schedule", icon: Calendar, isActive: pathname === "/dashboard/auto-schedule" },
+    { title: "View Scheduled Post", url: "/dashboard/view-scheduled-tweets", icon: View , isActive: pathname === "/dashboard/view-scheduled-tweets" }
   ];
 
 
