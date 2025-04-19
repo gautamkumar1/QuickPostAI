@@ -119,7 +119,6 @@ function AutoSchedule() {
   }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
-      <p className="text-2xl font-semibold mb-4 text-red-600">Warning: Currently this features was disabled 😔</p>
       <p className="text-xl font-semibold mb-4 text-yellow-400">Note : If you are using brave so make sure that please disable brave sheilds</p>
       <div className="w-full max-w-3xl">
         <motion.div className="space-y-6">
