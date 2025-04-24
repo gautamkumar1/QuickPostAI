@@ -3,7 +3,7 @@ import { prisma } from "../database/db.config.js";
 import logger from "../../logger.js";
 
 // In twitterAuth function
-
+const FRONTEND_URL = process.env.NODE_ENV === "development" ? process.env.DEV_FRONTEND_URL : process.env.PROD_FRONTEND_URL
 const COOKIE_SECURE = process.env.NODE_ENV === 'production'
 const COOKIE_HTTPONLY = true
 const COOKIE_SAMESITE = process.env.NODE_ENV === 'production' ? 'none' : 'lax'
@@ -117,7 +117,7 @@ const twitterAuth = async (req, res) => {
     //     twitterUser,
     //     updatedUser,
     //   });
-    return res.redirect(`${process.env.FRONTEND_URL}/dashboard/auto-schedule?success=true`);
+    return res.redirect(`${FRONTEND_URL}/dashboard/auto-schedule?success=true`);
 
     } catch (error) {
       console.error("Twitter Callback Error:", error);
